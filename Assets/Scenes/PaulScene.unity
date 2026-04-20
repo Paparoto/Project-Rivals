@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 919490323}
   - component: {fileID: 919490327}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Camera Principal
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -396,6 +396,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee635750ec8c1d44ad07ac8233084b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  gameDuration: 180
+  isGameRunning: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
