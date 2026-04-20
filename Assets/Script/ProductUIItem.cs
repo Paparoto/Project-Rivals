@@ -4,46 +4,33 @@ using UnityEngine.UI;
 
 public class ProductUIItem : MonoBehaviour
 {
-    public TMP_Text categoryText;
-    public TMP_Text nameText;
-    public TMP_Text priceText;
-    public TMP_Text bonusText;
-    public TMP_Text malusText;
-    public TMP_Text stockText;
+    public TMP_Text categoryText, nameText, priceText, bonusText, malusText, stockText;
     public Button buyButton;
+    public GameObject selectionFrame; // Glisse l'objet SelectionFrame ici
 
     private TransactionManager.Product data;
     private TransactionManager.PlayerData owner;
     private TransactionManager manager;
 
-    public void Setup(TransactionManager.Product product, TransactionManager.PlayerData player, TransactionManager tm)
+    public void Setup(TransactionManager.Product p, TransactionManager.PlayerData plr, TransactionManager tm)
     {
-        data = product;
-        owner = player;
-        manager = tm;
-
-        categoryText.text = product.category;
-        nameText.text = product.name;
-        priceText.text = $"B: {product.buyPrice} / S: {product.sellPrice}";
-        bonusText.text = product.bonus;
-        malusText.text = product.malus;
-
-        buyButton.onClick.AddListener(BuyItem);
+        data = p; owner = plr; manager = tm;
+        categoryText.text = $"[{p.category}]";
+        nameText.text = p.name;
+        priceText.text = $"{p.buyPrice}/{p.sellPrice}";
+        bonusText.text = p.bonus;
+        malusText.text = p.malus;
         UpdateStock();
-    }
-
-    void BuyItem()
-    {
-        if (manager.Buy(owner, data))
-        {
-            UpdateStock();
-        }
     }
 
     public void UpdateStock()
     {
-        // Counts how many of this product name are in the player's inventory list
-        int count = owner.inventory.FindAll(p => p.name == data.name).Count;
-        stockText.text = "Stock: " + count;
+        int count = owner.inventory.FindAll(x => x.name == data.name).Count;
+        stockText.text = "Stk:" + count;
+    }
+
+    public void SetSelected(bool isSelected)
+    {
+        if (selectionFrame != null) selectionFrame.SetActive(isSelected);
     }
 }
