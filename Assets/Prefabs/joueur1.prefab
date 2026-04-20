@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1985259720060533878}
   - component: {fileID: 2423211098043618076}
   - component: {fileID: 6425490858550476923}
+  - component: {fileID: 2655186581246004655}
   m_Layer: 0
   m_Name: joueur1
   m_TagString: Untagged
@@ -160,3 +161,18 @@ MonoBehaviour:
   moveDown: 115
   moveLeft: 97
   moveRight: 100
+--- !u!114 &2655186581246004655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499426798439841414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c93a8ab7d80ed4ebf8d57723cac738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TakeObject
+  objectToPickup: {fileID: 0}
+  heldObject: {fileID: 0}
+  take: 101
