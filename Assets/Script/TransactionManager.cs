@@ -4,22 +4,32 @@ using UnityEngine;
 public class TransactionManager : MonoBehaviour
 {
     // ======================
-    // 📦 PRODUCT (INCLUS ICI)
+    // 📦 PRODUCT
     // ======================
     public class Product
     {
         public string name;
-        public int buyPrice;
+        public string category;
 
-        public Product(string name, int buyPrice)
+        public int buyPrice;
+        public int sellPrice;
+
+        public string bonus;
+        public string malus;
+
+        public Product(string name, string category, int buyPrice, int sellPrice, string bonus, string malus)
         {
             this.name = name;
+            this.category = category;
             this.buyPrice = buyPrice;
+            this.sellPrice = sellPrice;
+            this.bonus = bonus;
+            this.malus = malus;
         }
     }
 
     // ======================
-    // 👤 JOUEURS
+    // 👤 PLAYER
     // ======================
     public class PlayerData
     {
@@ -34,16 +44,20 @@ public class TransactionManager : MonoBehaviour
     // ======================
     // 🛒 ACHAT
     // ======================
-    public bool Buy(PlayerData player, string productName, int buyPrice)
+    public bool Buy(PlayerData player, Product product)
     {
-        if (player.money < buyPrice)
+        if (player.money < product.buyPrice)
         {
             Debug.Log("Pas assez d'argent");
             return false;
         }
 
-        player.money -= buyPrice;
-        player.inventory.Add(new Product(productName, buyPrice));
+        player.money -= product.buyPrice;
+        player.inventory.Add(product);
+
+        Debug.Log("Achat: " + product.name + " (" + product.category + ")");
+        Debug.Log("Bonus: " + product.bonus);
+        Debug.Log("Malus: " + product.malus);
 
         return true;
     }
@@ -51,7 +65,7 @@ public class TransactionManager : MonoBehaviour
     // ======================
     // 💸 VENTE
     // ======================
-    public void Sell(PlayerData player, Product product, int sellPrice)
+    public void Sell(PlayerData player, Product product)
     {
         if (!player.inventory.Contains(product))
         {
@@ -60,11 +74,12 @@ public class TransactionManager : MonoBehaviour
         }
 
         player.inventory.Remove(product);
-        player.money += sellPrice;
+        player.money += product.sellPrice;
 
-        int profit = sellPrice - product.buyPrice;
+        int profit = product.sellPrice - product.buyPrice;
         player.profits.Add(profit);
 
+        Debug.Log("Vente: " + product.name);
         Debug.Log("Profit: " + profit);
     }
 
