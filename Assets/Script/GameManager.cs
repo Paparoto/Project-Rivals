@@ -7,28 +7,24 @@ public class GameManager : MonoBehaviour
 
     public bool isGameRunning = false;
 
-    public PlayerEconomy player1;
-    public PlayerEconomy player2;
+    public TransactionManager transactionManager;
 
     void Start()
     {
-        player1 = new PlayerEconomy();
-        player2 = new PlayerEconomy();
-
+        transactionManager = GetComponent<TransactionManager>();
         StartGame();
     }
 
     void Update()
     {
-        if (isGameRunning)
-        {
-            timer -= Time.deltaTime;
+        if (!isGameRunning) return;
 
-            if (timer <= 0f)
-            {
-                timer = 0f;
-                EndGame();
-            }
+        timer -= Time.deltaTime;
+
+        if (timer <= 0f)
+        {
+            timer = 0f;
+            EndGame();
         }
     }
 
@@ -42,15 +38,15 @@ public class GameManager : MonoBehaviour
     {
         isGameRunning = false;
 
-        int p1Profit = player1.GetProfit();
-        int p2Profit = player2.GetProfit();
+        int p1 = transactionManager.GetProfit(transactionManager.player1);
+        int p2 = transactionManager.GetProfit(transactionManager.player2);
 
-        Debug.Log("P1 profit: " + p1Profit);
-        Debug.Log("P2 profit: " + p2Profit);
+        Debug.Log("P1 profit: " + p1);
+        Debug.Log("P2 profit: " + p2);
 
-        if (p1Profit > p2Profit)
+        if (p1 > p2)
             Debug.Log("Player 1 wins !");
-        else if (p2Profit > p1Profit)
+        else if (p2 > p1)
             Debug.Log("Player 2 wins !");
         else
             Debug.Log("Draw !");
