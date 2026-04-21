@@ -1,24 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Linq; // Nécessaire pour la gestion des listes
 
 public class TransactionManager : MonoBehaviour
 {
-    [Header("Modèles des Produits")]
-    public GameObject appleModel;
-    // ... (ajoute les autres modèles)
+    [Header("Lien avec le Visuel")]
+    // Glisse l'objet "Food" ici dans l'inspecteur
+    public FoodVisualizer foodVisualizer; 
 
-    void Start()
-    {
-        // Produits de test
-        Product apple = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", appleModel);
+    [Header("Modèles des Produits (Prefabs)")]
+    public GameObject Apple;
+    // Ajoute d'autres GameObjects ici si besoin (ex: public GameObject Bread;)
 
-        player1.inventory.AddRange(new List<Product> {apple});
-        player1.money = 500;
-
-        Debug.Log($"Inventaire player1 initialisé : {player1.inventory.Count} produits, {player1.money} pièces.");
-    }
     // ======================
-    // 📦 PRODUCT
+    // 📦 CLASSE PRODUCT
     // ======================
     public class Product
     {
@@ -28,11 +23,8 @@ public class TransactionManager : MonoBehaviour
         public int sellPrice;
         public string bonus;
         public string malus;
-
-        // --- AJOUTE CETTE LIGNE ---
         public GameObject prefab;
 
-        // MODIFIE LE CONSTRUCTEUR POUR INCLURE LE PREFAB
         public Product(string name, string category, int buyPrice, int sellPrice, string bonus, string malus, GameObject prefab)
         {
             this.name = name;
@@ -41,12 +33,12 @@ public class TransactionManager : MonoBehaviour
             this.sellPrice = sellPrice;
             this.bonus = bonus;
             this.malus = malus;
-            this.prefab = prefab; // <-- Assigne le prefab ici
+            this.prefab = prefab;
         }
     }
 
     // ======================
-    // 👤 PLAYER
+    // 👤 CLASSE PLAYER
     // ======================
     public class PlayerData
     {
@@ -58,8 +50,24 @@ public class TransactionManager : MonoBehaviour
     public PlayerData player1 = new PlayerData();
     public PlayerData player2 = new PlayerData();
 
+    void Start()
+    {
+        // --- INITIALISATION DE TEST ---
+        // On crée deux pommes de test
+        Product apple1 = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", Apple);
+        
+        // On les ajoute au joueur 1
+        player1.inventory.Add(apple1);
+        player1.money = 500;
+
+        Debug.Log($"Inventaire initial : {player1.inventory.Count} produits.");
+
+        // Mise à jour visuelle immédiate au lancement
+        RefreshVisuals();
+    }
+
     // ======================
-    // 🛒 ACHAT
+    // 🛒 SYSTÈME D'ACHAT
     // ======================
     public bool Buy(PlayerData player, Product product)
     {
@@ -72,15 +80,14 @@ public class TransactionManager : MonoBehaviour
         player.money -= product.buyPrice;
         player.inventory.Add(product);
 
-        Debug.Log("Achat: " + product.name + " (" + product.category + ")");
-        Debug.Log("Bonus: " + product.bonus);
-        Debug.Log("Malus: " + product.malus);
-
+        Debug.Log($"Acheté : {product.name}. Argent restant : {player.money}");
+        
+        RefreshVisuals(); // Mise à jour visuelle
         return true;
     }
 
     // ======================
-    // 💸 VENTE
+    // 💸 SYSTÈME DE VENTE
     // ======================
     public void Sell(PlayerData player, Product product)
     {
@@ -96,20 +103,27 @@ public class TransactionManager : MonoBehaviour
         int profit = product.sellPrice - product.buyPrice;
         player.profits.Add(profit);
 
-        Debug.Log("Vente: " + product.name);
-        Debug.Log("Profit: " + profit);
+        Debug.Log($"Vendu : {product.name}. Profit : {profit}");
+
+        RefreshVisuals(); // Mise à jour visuelle
     }
 
     // ======================
-    // 📊 PROFIT TOTAL
+    // 📊 CALCULS ET UTILITAIRES
     // ======================
     public int GetProfit(PlayerData player)
     {
         int total = 0;
-
-        foreach (int p in player.profits)
-            total += p;
-
+        foreach (int p in player.profits) total += p;
         return total;
+    }
+
+    // Fonction interne pour rafraîchir l'affichage via le FoodVisualizer
+    private void RefreshVisuals()
+    {
+        if (foodVisualizer != null)
+        {
+            foodVisualizer.Refresh();
+        }
     }
 }
