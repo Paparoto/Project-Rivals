@@ -28,6 +28,16 @@ public class PlayerMovement3D : MonoBehaviour
 
     private bool canThrow = true; // évite de lancer en boucle si la gâchette reste enfoncée
 
+    [Header("Zones d'interaction")]
+    public GameObject PCTargetZone;   // Glisse le PC ici (PC Gauche pour J1, PC Droite pour J2)
+    public GameObject PoissonZone;    // Glisse l'étagère Poisson
+    public GameObject ViandeZone;     // Glisse l'étagère Viande
+    public GameObject SucreZone;      // Glisse l'étagère Sucré
+
+    [Header("Interface PC")]
+    public GameObject monPanelUI;     // Glisse le Panel UI ici
+    private bool isInPCZone = false;  // État de présence devant le PC
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -35,6 +45,8 @@ public class PlayerMovement3D : MonoBehaviour
 
         axisH = $"joystick {gamepadIndex + 1} axis 0";
         axisV = $"joystick {gamepadIndex + 1} axis 1";
+
+        if (monPanelUI != null) monPanelUI.SetActive(false);
     }
     private bool isStunned = false;
 
@@ -102,6 +114,23 @@ public class PlayerMovement3D : MonoBehaviour
 
         // === LANCER (gâchette droite = axis 5 sur Xbox) ===
         HandleThrow();
+        // === INTERACTION SPECIAL ===
+        // Vérifie si le joueur est devant son PC
+        if (isInPCZone)
+        {
+            // Utilise Button 1 pour allumer/éteindre le panel
+            string interactionButton = "joystick " + (gamepadIndex + 1) + " button 1";
+
+            if (Input.GetKeyDown(interactionButton))
+            {
+                if (monPanelUI != null)
+                {
+                    // Allume si éteint, éteint si allumé
+                    monPanelUI.SetActive(!monPanelUI.activeSelf);
+                    Debug.Log("PC Joueur " + (gamepadIndex + 1) + " : Panel Toggled");
+                }
+            }
+        }
     }
 
 public float throwCooldown = 2f; // modifiable dans l'Inspector
@@ -157,5 +186,47 @@ void HandleThrow()
         Vector3 velocity = movement * speed;
         velocity.y = rb.linearVelocity.y;
         rb.linearVelocity = velocity;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        // 1. Détection du PC (pour activer l'interaction plus tard dans Update)
+        if (PCTargetZone != null && other.gameObject == PCTargetZone)
+        {
+            isInPCZone = true;
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " est devant son PC. Appuyez sur Bouton 1 pour le panel.");
+        }
+
+        // 2. Détection Étagère Poisson
+        if (PoissonZone != null && other.gameObject == PoissonZone)
+        {
+            Debug.Log("Message : Voici le rayon POISSON 🐟");
+        }
+
+        // 3. Détection Étagère Viande
+        if (ViandeZone != null && other.gameObject == ViandeZone)
+        {
+            Debug.Log("Message : Voici le rayon VIANDE 🥩");
+        }
+
+        // 4. Détection Étagère Sucré
+        if (SucreZone != null && other.gameObject == SucreZone)
+        {
+            Debug.Log("Message : Voici le rayon SUCRÉ 🍬");
+        }
+    }
+
+
+    private void OnTriggerExit(Collider other)
+    {
+        // Quand on s'éloigne du PC, on désactive la possibilité d'appuyer sur le bouton
+        if (PCTargetZone != null && other.gameObject == PCTargetZone)
+        {
+            isInPCZone = false;
+
+            // Optionnel : On peut aussi éteindre le panel automatiquement quand il part
+            if (monPanelUI != null) monPanelUI.SetActive(false);
+
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " s'est éloigné du PC.");
+        }
     }
 }
