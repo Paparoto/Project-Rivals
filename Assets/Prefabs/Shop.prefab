@@ -16204,7 +16204,7 @@ MonoBehaviour:
   throwOrigin: {fileID: 7915289756632996873}
   PCTargetZone: {fileID: 9165234596028042717}
   PoissonZone: {fileID: 0}
-  ViandeZone: {fileID: 0}
+  ViandeZone: {fileID: 5677613146159762607}
   SucreZone: {fileID: 0}
   CashierTargetZone: {fileID: 7695661420540322708}
   monPanelUI: {fileID: 2584676360073964703}
@@ -25690,7 +25690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54d03b412f1b7e74f97eee2911196ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QueueManager
-  clientPrefab: {fileID: 7725629295119389706, guid: f36b15766a351d94085e1bc17814c06e, type: 3}
+  clientPrefab: {fileID: 7725629295119389706, guid: 96a2b61975fed8047be6696ae07d1622, type: 3}
   waitPoints:
   - {fileID: 9062426250074565782}
   - {fileID: 6029421386924588600}
