@@ -31,7 +31,6 @@ public class PlayerMovement3D : MonoBehaviour
 
     [Header("Zones d'interaction")]
     public GameObject PCTargetZone;   // Glisse le PC ici (PC Gauche pour J1, PC Droite pour J2)
-    public GameObject PoissonZone;
 
     [Header("Zones d'étagères")]
     public GameObject TargetZone1;
