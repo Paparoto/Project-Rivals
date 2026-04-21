@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TakeObject : MonoBehaviour
 {
-    [SerializeField] private GameObject objectToPickup;
+    public GameObject objectToPickup;
 
     public GameObject heldObject;
     public KeyCode take;

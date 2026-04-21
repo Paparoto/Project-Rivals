@@ -18,6 +18,9 @@ public class QueueManager : MonoBehaviour
     public float minInterval = 7f;
     public float maxInterval = 10f;
 
+    [Header("Lien avec le ramassage")]
+    public TakeObject playerTakeScript; // Glisse ici le Joueur (celui qui a le script TakeObject)
+
     private List<GameObject> clientList = new List<GameObject>();
 
     void Start()
@@ -56,11 +59,10 @@ public class QueueManager : MonoBehaviour
     {
         if (clientList.Count > 0)
         {
-            GameObject clientToLeave = clientList[0];
-            clientList.RemoveAt(0);
+            // ... (ton code existant)
 
-            if (clientToLeave != null)
-                clientToLeave.GetComponent<Client>().Leave(exitPoint.position);
+            if (playerTakeScript != null)
+                playerTakeScript.objectToPickup = null; // On vide la main du joueur
 
             UpdateQueuePositions();
         }
@@ -80,7 +82,28 @@ public class QueueManager : MonoBehaviour
             client.SetTarget(waitPoints[i].position);
 
             if (i == 0)
+            {
                 client.SetAsFirstInQueue();
+
+                // --- AJOUT POUR LE PRODUIT ---
+                if (playerTakeScript != null)
+                {
+                    // On récupère les données du joueur (1 ou 2)
+                    TransactionManager.PlayerData playerData = (assignedPlayer == 1)
+                        ? transactionManager.player1
+                        : transactionManager.player2;
+
+                    // On force le client à faire sa demande
+                    client.Request(playerData);
+
+                    // On envoie le prefab du produit au script TakeObject du joueur
+                    // NOTE: Cela suppose que ta classe 'Product' a une variable 'prefab'
+                    if (client.requestedProduct != null)
+                    {
+                        playerTakeScript.objectToPickup = client.requestedProduct.prefab;
+                    }
+                }
+            }
         }
     }
 
