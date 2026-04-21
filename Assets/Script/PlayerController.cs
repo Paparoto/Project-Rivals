@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 
 public class PlayerMovement3D : MonoBehaviour
 {
@@ -49,6 +51,10 @@ public class PlayerMovement3D : MonoBehaviour
     private bool isInZone1, isInZone2, isInZone3, isInZone4;
     private bool isStunned = false;
 
+    [HideInInspector] public string carriedProductName = ""; // Nom de l'objet en main
+
+    public GameObject tomatoSplashUI; // Glisse l'Image de tache ici
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -78,7 +84,21 @@ public class PlayerMovement3D : MonoBehaviour
         isStunned = true;
         animator.SetBool("isRunning2", false);
         rb.linearVelocity = Vector3.zero;
+
+        // --- AFFICHAGE DE LA TACHE ---
+        if (tomatoSplashUI != null)
+        {
+            tomatoSplashUI.SetActive(true);
+        }
+
         yield return new WaitForSeconds(duration);
+
+        // --- NETTOYAGE DE LA TACHE ---
+        if (tomatoSplashUI != null)
+        {
+            tomatoSplashUI.SetActive(false);
+        }
+
         isStunned = false;
     }
 
@@ -150,7 +170,12 @@ public class PlayerMovement3D : MonoBehaviour
 
                 Destroy(heldObject);
                 heldObject = null;
+
+                // ON VIDE LE NOM AVANT DE RAFRAICHIR
+                carriedProductName = "";
+
                 linkedQueue.ServeClient();
+                RefreshAllShelves();
             }
             else
             {
@@ -182,10 +207,17 @@ public class PlayerMovement3D : MonoBehaviour
         {
             heldObject = Instantiate(prefabVoulu, handTransform.position, handTransform.rotation);
             heldObject.transform.SetParent(handTransform);
+
+            // ON STOCKE LE NOM PROPRE ICI
+            carriedProductName = prefabVoulu.name;
             heldObject.name = prefabVoulu.name;
+
             if (heldObject.GetComponent<Rigidbody>()) heldObject.GetComponent<Rigidbody>().isKinematic = true;
-            Debug.Log("Objet ramassé !");
+
+            // RAFRAICHIR TOUTES LES ÉTAGÈRES
+            RefreshAllShelves();
         }
+
     }
 
     void HandleThrow()
@@ -248,5 +280,16 @@ public class PlayerMovement3D : MonoBehaviour
         if (other.gameObject == TargetZone2) isInZone2 = false;
         if (other.gameObject == TargetZone3) isInZone3 = false;
         if (other.gameObject == TargetZone4) isInZone4 = false;
+    }
+    public string GetHeldObjectName()
+    {
+        if (heldObject == null) return "";
+        // On renvoie le nom de l'objet (qui a été nettoyé lors du ramassage)
+        return heldObject.name;
+    }
+    void RefreshAllShelves()
+    {
+        FoodVisualizer[] visualizers = FindObjectsByType<FoodVisualizer>(FindObjectsSortMode.None);
+        foreach (var v in visualizers) v.Refresh();
     }
 }   
