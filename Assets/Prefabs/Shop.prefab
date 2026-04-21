@@ -15572,6 +15572,8 @@ GameObject:
   - component: {fileID: 3033494972569558448}
   - component: {fileID: 1041746746976149440}
   - component: {fileID: 1682687069966477366}
+  - component: {fileID: 6729939396941745540}
+  - component: {fileID: 7760168460887104479}
   - component: {fileID: 3969035848798683310}
   m_Layer: 0
   m_Name: Main Camera
@@ -15615,8 +15617,11 @@ MonoBehaviour:
   - {fileID: 5317293695220996614}
   spawnPoint: {fileID: 6634089712217732767}
   exitPoint: {fileID: 1881692221780736905}
+  transactionManager: {fileID: 7760168460887104479}
+  assignedPlayer: 1
   spawnDelay: 2
-  spawnInterval: 5
+  minInterval: 7
+  maxInterval: 10
 --- !u!114 &3033494972569558448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15637,8 +15642,11 @@ MonoBehaviour:
   - {fileID: 9196156657002641696}
   spawnPoint: {fileID: 4922213157116341793}
   exitPoint: {fileID: 4001701086197536148}
+  transactionManager: {fileID: 7760168460887104479}
+  assignedPlayer: 2
   spawnDelay: 2
-  spawnInterval: 5
+  minInterval: 7
+  maxInterval: 10
 --- !u!20 &1041746746976149440
 Camera:
   m_ObjectHideFlags: 0
@@ -15698,6 +15706,33 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7447359082431234984}
   m_Enabled: 1
+--- !u!114 &6729939396941745540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7447359082431234984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee635750ec8c1d44ad07ac8233084b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  gameDuration: 180
+  isGameRunning: 0
+  transactionManager: {fileID: 7760168460887104479}
+--- !u!114 &7760168460887104479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7447359082431234984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33429b15a6d63344889f19cdd6174e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TransactionManager
 --- !u!114 &3969035848798683310
 MonoBehaviour:
   m_ObjectHideFlags: 0
