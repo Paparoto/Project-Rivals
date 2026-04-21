@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+
 public class PlayerMovement3D : MonoBehaviour
 {
     [Header("Mouvement")]
@@ -52,6 +53,8 @@ public class PlayerMovement3D : MonoBehaviour
 
     [HideInInspector] public string carriedProductName = ""; // Nom de l'objet en main
 
+    public GameObject tomatoSplashUI; // Glisse l'Image de tache ici
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -81,7 +84,21 @@ public class PlayerMovement3D : MonoBehaviour
         isStunned = true;
         animator.SetBool("isRunning2", false);
         rb.linearVelocity = Vector3.zero;
+
+        // --- AFFICHAGE DE LA TACHE ---
+        if (tomatoSplashUI != null)
+        {
+            tomatoSplashUI.SetActive(true);
+        }
+
         yield return new WaitForSeconds(duration);
+
+        // --- NETTOYAGE DE LA TACHE ---
+        if (tomatoSplashUI != null)
+        {
+            tomatoSplashUI.SetActive(false);
+        }
+
         isStunned = false;
     }
 
