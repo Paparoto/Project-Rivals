@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &1433254 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4760037396440712255, guid: 98af8ff7c81fecc4a825901e7506df3e, type: 3}
+  m_PrefabInstance: {fileID: 393709123}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c93a8ab7d80ed4ebf8d57723cac738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TakeObject
 --- !u!1001 &232313736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -403,6 +414,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1161759545539869489, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
+      propertyPath: playerTakeScript
+      value: 
+      objectReference: {fileID: 1823484357}
+    - target: {fileID: 3033494972569558448, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
+      propertyPath: playerTakeScript
+      value: 
+      objectReference: {fileID: 1433254}
     - target: {fileID: 7005049671957667753, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
       propertyPath: m_Name
       value: Shop
@@ -1196,6 +1215,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1948554727746855678, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
   m_PrefabInstance: {fileID: 782589612}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1823484357 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8133004312673976419, guid: 72360e45b2b3afa4cb09d49364a861be, type: 3}
+  m_PrefabInstance: {fileID: 983677655}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c93a8ab7d80ed4ebf8d57723cac738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TakeObject
 --- !u!4 &1828576038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6076289463367960943, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
