@@ -2,7 +2,19 @@ using UnityEngine;
 
 public class TakeObject : MonoBehaviour
 {
-    public GameObject objectToPickup;
+
+    [Header("Lien File d'attente")]
+    public QueueManager maFileAttente; // Glisse le QueueManager ici dans l'inspecteur
+
+    // Cette fonction te donnera l'objet voulu en temps réel
+    public GameObject GetTargetProduct()
+    {
+        if (maFileAttente != null)
+        {
+            return maFileAttente.GetFirstClientRequest();
+        }
+        return null;
+    }
 
     public GameObject heldObject;
     public KeyCode take;
@@ -24,7 +36,7 @@ public class TakeObject : MonoBehaviour
 
     private void Pickup()
     {
-        heldObject = objectToPickup;
+        heldObject = GetTargetProduct();
         heldObject.SetActive(false);
     }
 
@@ -37,9 +49,9 @@ public class TakeObject : MonoBehaviour
     void OnValidate()
     {
         // Ce code s'exécute dès que la variable change
-        if (objectToPickup != null)
+        if (GetTargetProduct() != null)
         {
-            Debug.Log("TakeObject : J'ai bien reçu l'objet " + objectToPickup.name);
+            Debug.Log("TakeObject : J'ai bien reçu l'objet " + GetTargetProduct().name);
         }
     }
 }
