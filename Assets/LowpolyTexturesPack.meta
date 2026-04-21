@@ -1,6 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/LowpolyTexturesPack.meta
 guid: d3ef5f0f8accc2347ba11cb718075211
 folderAsset: yes
+========
+guid: 7c54e24933c76c84688d37e554b378dd
+>>>>>>>> d877def949e576a7996ed6f2c0680baf8b94bb27:Assets/_Recovery/0.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
