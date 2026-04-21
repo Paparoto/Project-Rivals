@@ -225,12 +225,12 @@ GameObject:
   - component: {fileID: 5519710257742329595}
   - component: {fileID: 138761796184810798}
   m_Layer: 0
-  m_Name: BullleDialogue
+  m_Name: BulleDialogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1165322925587429765
 RectTransform:
   m_ObjectHideFlags: 0
@@ -239,7 +239,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7441765405134280286}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.196}
+  m_LocalPosition: {x: 0, y: 0, z: 1.13}
   m_LocalScale: {x: 0.0011319, y: 0.0020369, z: 0.005}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -249,7 +249,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.102, y: 1.491}
+  m_AnchoredPosition: {x: -1.765, y: 1.491}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &63836434938568578
@@ -382,6 +382,8 @@ MonoBehaviour:
   requestedProductCategory: 
   requestedProductPrice: 0
   queueManager: {fileID: 0}
+  bulleObjet: {fileID: 7441765405134280286}
+  texteProduit: {fileID: 7022606130790432169}
 --- !u!23 &8862553498108545294
 MeshRenderer:
   m_ObjectHideFlags: 0
