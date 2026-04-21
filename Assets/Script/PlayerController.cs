@@ -249,4 +249,4 @@ public class PlayerMovement3D : MonoBehaviour
         if (other.gameObject == TargetZone3) isInZone3 = false;
         if (other.gameObject == TargetZone4) isInZone4 = false;
     }
-}
+}   
