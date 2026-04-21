@@ -23,6 +23,20 @@ public class ShopManagerUI : MonoBehaviour
     public Color selectedColor = new Color(0f, 1f, 0f, 0.4f);
     public Color normalColor = new Color(0f, 0f, 0f, 0.6f);
 
+    [Header("Modèles 3D des produits")]
+    public GameObject prefabEntrecote;
+    public GameObject prefabPoulet;
+    public GameObject prefabTomate;
+    public GameObject prefabOignon;
+    public GameObject prefabGateau;
+    public GameObject prefabCookie;
+    public GameObject prefabThon;
+    public GameObject prefabSardine;
+    public GameObject prefabFromageBleu;
+    public GameObject prefabEmmental;
+    public GameObject prefabBanane;
+    public GameObject prefabAnanas;
+
     // LISTE DES PRODUITS ACCESSIBLE PARTOUT
     private List<TransactionManager.Product> catalog = new List<TransactionManager.Product>();
 
@@ -35,18 +49,19 @@ public class ShopManagerUI : MonoBehaviour
     void CreateCatalog()
     {
         catalog.Clear();
-        catalog.Add(new TransactionManager.Product("Entrecote", "Viande", 30, 75, "None", "Plus lent (-20%)"));
-        catalog.Add(new TransactionManager.Product("Poulet roti", "Viande", 15, 40, "None", "Refroidir (Prix:30)"));
-        catalog.Add(new TransactionManager.Product("Tomate", "Legume", 5, 15, "Lancer tomate", "Pourri vite"));
-        catalog.Add(new TransactionManager.Product("Oignons", "Legume", 5, 20, "Ne pourri pas", "Reduit client-10%"));
-        catalog.Add(new TransactionManager.Product("Gateau", "Dessert", 30, 75, "None", "Stock +2"));
-        catalog.Add(new TransactionManager.Product("Cookie", "Dessert", 5, 15, "Plus rapide +20%", "None"));
-        catalog.Add(new TransactionManager.Product("Thon", "Poisson", 15, 45, "None", "Reduit client-10%"));
-        catalog.Add(new TransactionManager.Product("Sardine", "Poisson", 10, 30, "None", "Chat qui vole"));
-        catalog.Add(new TransactionManager.Product("Fromage bleu", "Fromage", 30, 80, "None", "Odeur forte"));
-        catalog.Add(new TransactionManager.Product("Emmental", "Fromage", 10, 25, "None", "None"));
-        catalog.Add(new TransactionManager.Product("Banane", "Fruit", 5, 15, "Lancer banane", "None"));
-        catalog.Add(new TransactionManager.Product("Ananase", "Fruit", 20, 50, "None", "Pourri (moyen)"));
+        // Ajoute bien le nom de la variable prefab à la fin de chaque ligne
+        catalog.Add(new TransactionManager.Product("Entrecote", "Viande", 30, 75, "None", "Plus lent (-20%)", prefabEntrecote));
+        catalog.Add(new TransactionManager.Product("Poulet roti", "Viande", 15, 40, "None", "Refroidir (Prix:30)", prefabPoulet));
+        catalog.Add(new TransactionManager.Product("Tomate", "Legume", 5, 15, "Lancer tomate", "Pourri vite", prefabTomate));
+        catalog.Add(new TransactionManager.Product("Oignons", "Legume", 5, 20, "Ne pourri pas", "Reduit client-10%", prefabOignon));
+        catalog.Add(new TransactionManager.Product("Gateau", "Dessert", 30, 75, "None", "Stock +2", prefabGateau));
+        catalog.Add(new TransactionManager.Product("Cookie", "Dessert", 5, 15, "Plus rapide +20%", "None", prefabCookie));
+        catalog.Add(new TransactionManager.Product("Thon", "Poisson", 15, 45, "None", "Reduit client-10%", prefabThon));
+        catalog.Add(new TransactionManager.Product("Sardine", "Poisson", 10, 30, "None", "Chat qui vole", prefabSardine));
+        catalog.Add(new TransactionManager.Product("Fromage bleu", "Fromage", 30, 80, "None", "Odeur forte", prefabFromageBleu));
+        catalog.Add(new TransactionManager.Product("Emmental", "Fromage", 10, 25, "None", "None", prefabEmmental));
+        catalog.Add(new TransactionManager.Product("Banane", "Fruit", 5, 15, "Lancer banane", "None", prefabBanane));
+        catalog.Add(new TransactionManager.Product("Ananase", "Fruit", 20, 50, "None", "Pourri (moyen)", prefabAnanas));
 
         foreach (var p in catalog)
         {

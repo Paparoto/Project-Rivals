@@ -25,7 +25,7 @@ public class QueueManager : MonoBehaviour
 
     void Start()
     {
-        Invoke("SpawnClient", spawnDelay);
+        Invoke("SpawnClient", spawnDelay + 0.5f);
     }
 
     void Update()
@@ -85,23 +85,31 @@ public class QueueManager : MonoBehaviour
             {
                 client.SetAsFirstInQueue();
 
-                // --- AJOUT POUR LE PRODUIT ---
                 if (playerTakeScript != null)
                 {
-                    // On récupère les données du joueur (1 ou 2)
-                    TransactionManager.PlayerData playerData = (assignedPlayer == 1)
-                        ? transactionManager.player1
-                        : transactionManager.player2;
+                    TransactionManager.PlayerData pData = (assignedPlayer == 1) ? transactionManager.player1 : transactionManager.player2;
 
-                    // On force le client à faire sa demande
-                    client.Request(playerData);
-
-                    // On envoie le prefab du produit au script TakeObject du joueur
-                    // NOTE: Cela suppose que ta classe 'Product' a une variable 'prefab'
-                    if (client.requestedProduct != null)
+                    if (pData.inventory.Count > 0)
                     {
-                        playerTakeScript.objectToPickup = client.requestedProduct.prefab;
+                        client.Request(pData);
+                        if (client.requestedProduct != null)
+                        {
+                            playerTakeScript.objectToPickup = client.requestedProduct.prefab;
+                            Debug.Log("Produit envoyé au joueur : " + client.requestedProduct.name);
+                        }
+                        else
+                        {
+                            Debug.LogError("Le produit demandé est null !");
+                        }
                     }
+                    else
+                    {
+                        Debug.LogWarning("L'inventaire du Joueur " + assignedPlayer + " est VIDE. Le client ne peut rien demander.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Le slot PlayerTakeScript est VIDE dans l'inspecteur du QueueManager !");
                 }
             }
         }

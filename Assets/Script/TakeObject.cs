@@ -33,4 +33,13 @@ public class TakeObject : MonoBehaviour
         Destroy(heldObject);
         heldObject = null;
     }
+
+    void OnValidate()
+    {
+        // Ce code s'exécute dès que la variable change
+        if (objectToPickup != null)
+        {
+            Debug.Log("TakeObject : J'ai bien reçu l'objet " + objectToPickup.name);
+        }
+    }
 }
