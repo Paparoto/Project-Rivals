@@ -7,6 +7,7 @@ public class PlayerMovement3D : MonoBehaviour
 
     [Header("Touches clavier")]
     public KeyCode moveUp;
+    public TransactionManager transactionManager;
     public KeyCode moveDown;
     public KeyCode moveLeft;
     public KeyCode moveRight;
@@ -38,7 +39,7 @@ public class PlayerMovement3D : MonoBehaviour
 
     [Header("Interface PC")]
     public GameObject monPanelUI;     // Glisse le Panel UI ici
-    private bool isInPCZone = false;  // État de présence devant le PC
+    public bool isInPCZone = false;  // État de présence devant le PC
 
     [Header("Interface Caisse")]
     public QueueManager linkedQueue;     // Glisse le QueueManager correspondant ici
@@ -202,21 +203,36 @@ void HandleThrow()
         ThrowObject();
     }
 }
+void ThrowObject()
+{
+    if (throwPrefab == null) return;
 
-    void ThrowObject()
+    // Détermine quel joueur selon gamepadIndex
+    TransactionManager.PlayerData player = gamepadIndex == 0 
+        ? transactionManager.player1 
+        : transactionManager.player2;
+
+    // Vérifie qu'il a au moins une tomate
+    TransactionManager.Product tomate = player.inventory.Find(x => x.name == "Tomate");
+    if (tomate == null)
     {
-        if (throwPrefab == null) return;
-
-        Vector3 spawnPos = throwOrigin != null ? throwOrigin.position : transform.position + transform.forward;
-
-        GameObject thrown = Instantiate(throwPrefab, spawnPos, transform.rotation);
-
-        Rigidbody thrownRb = thrown.GetComponent<Rigidbody>();
-        if (thrownRb != null)
-        {
-            thrownRb.linearVelocity = transform.forward * throwSpeed;
-        }
+        Debug.Log("Pas de tomate en stock !");
+        return;
     }
+
+    // Enlève une tomate de l'inventaire
+    player.inventory.Remove(tomate);
+
+    // Lance la tomate
+    Vector3 spawnPos = throwOrigin != null ? throwOrigin.position : transform.position + transform.forward;
+    GameObject thrown = Instantiate(throwPrefab, spawnPos, transform.rotation);
+
+    Rigidbody thrownRb = thrown.GetComponent<Rigidbody>();
+    if (thrownRb != null)
+    {
+        thrownRb.linearVelocity = transform.forward * throwSpeed;
+    }
+}
 
     void FixedUpdate()
     {

@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class ShopManagerUI : MonoBehaviour
 {
+
+    public PlayerMovement3D[] playerControllers; 
     public TransactionManager transactionManager;
     public GameObject productPrefab;
 
@@ -89,17 +91,21 @@ public class ShopManagerUI : MonoBehaviour
 {
     
     if (p1Rows.Count == 0 || p2Rows.Count == 0) return;
-
     // --- JOUEUR 1 (W / S / E) + Manette 1 (joystick haut/bas + carré = button 2) ---
     if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown("joystick 1 button 6")) 
         Navigate(ref p1Index, -1, p1Rows, p1Scroll);
     if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown("joystick 1 button 7")) 
         Navigate(ref p1Index, 1, p1Rows, p1Scroll);
     if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown("joystick 1 button 0"))
+{
+    int p1Stock = transactionManager.player1.inventory.FindAll(x => x.name == catalog[p1Index].name).Count;
+    if (playerControllers[0].isInPCZone && p1Stock < 3)
     {
         if (transactionManager.Buy(transactionManager.player1, catalog[p1Index]))
             p1Rows[p1Index].UpdateStock();
     }
+}
+
 
     // --- JOUEUR 2 (Flèches / RightShift) + Manette 2 (joystick haut/bas + carré = button 2) ---
     if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("joystick 2 button 6")) 
@@ -107,10 +113,14 @@ public class ShopManagerUI : MonoBehaviour
     if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown("joystick 2 button 7")) 
         Navigate(ref p2Index, 1, p2Rows, p2Scroll);
     if (Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown("joystick 2 button 0"))
+{
+    int p2Stock = transactionManager.player2.inventory.FindAll(x => x.name == catalog[p2Index].name).Count;
+    if (playerControllers[1].isInPCZone && p2Stock < 3)
     {
         if (transactionManager.Buy(transactionManager.player2, catalog[p2Index]))
             p2Rows[p2Index].UpdateStock();
     }
+}
 }
 
     void Navigate(ref int index, int dir, List<ProductUIItem> list, ScrollRect scroll)
