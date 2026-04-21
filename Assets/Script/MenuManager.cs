@@ -10,7 +10,11 @@ public class MenuManager : MonoBehaviour
 
     public void QuitGame()
     {
-        Debug.Log("The game is quitting!"); 
         Application.Quit(); 
+    }
+
+    public void GoToMenu()
+    {
+        SceneManager.LoadScene("CamilleScene"); 
     }
 }

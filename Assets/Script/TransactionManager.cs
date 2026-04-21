@@ -90,11 +90,15 @@ public class TransactionManager : MonoBehaviour
     }
 
     public int GetProfit(PlayerData player)
-    {
-        int total = 0;
-        foreach (int p in player.profits) total += p;
-        return total;
-    }
+{
+    int inventoryValue = 0;
+    foreach (Product p in player.inventory)
+        inventoryValue += p.buyPrice;
+
+    int total = player.money + inventoryValue;
+    Debug.Log($"Argent: {player.money}$ | Inventaire: {inventoryValue}$ | Total: {total}$");
+    return total;
+}
 
     private void RefreshVisuals()
     {

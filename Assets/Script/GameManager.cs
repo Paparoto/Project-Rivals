@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -53,11 +54,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("P2 profit: " + p2);
 
         if (p1 > p2)
-            Debug.Log("Player 1 wins !");
+            SceneManager.LoadScene("End");
         else if (p2 > p1)
-            Debug.Log("Player 2 wins !");
+            SceneManager.LoadScene("End 1");
         else
-            Debug.Log("Draw !");
+            SceneManager.LoadScene("End 2");
     }
 
     public float GetRemainingTime()
