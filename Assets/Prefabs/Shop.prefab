@@ -11478,6 +11478,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 975e716e99446474d90a9e260f25779e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopManagerUI
+  playerControllers:
+  - {fileID: 1521594324036646689}
+  - {fileID: 3906330012035003894}
   transactionManager: {fileID: 7760168460887104479}
   productPrefab: {fileID: 1955385602509961024, guid: 183eec9c806061742a80351176df90fb, type: 3}
   p1Content: {fileID: 266743928291515907}
@@ -12593,6 +12596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement3D
   speed: 40
   moveUp: 115
+  transactionManager: {fileID: 7760168460887104479}
   moveDown: 119
   moveLeft: 100
   moveRight: 97
@@ -12606,6 +12610,7 @@ MonoBehaviour:
   SucreZone: {fileID: 0}
   CashierTargetZone: {fileID: 6500177659432272040}
   monPanelUI: {fileID: 8930730945251701311}
+  isInPCZone: 0
   linkedQueue: {fileID: 1161759545539869489}
   throwCooldown: 2
 --- !u!114 &5502610913687015008
@@ -16195,6 +16200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement3D
   speed: 40
   moveUp: 274
+  transactionManager: {fileID: 7760168460887104479}
   moveDown: 273
   moveLeft: 275
   moveRight: 276
@@ -16208,6 +16214,7 @@ MonoBehaviour:
   SucreZone: {fileID: 0}
   CashierTargetZone: {fileID: 7695661420540322708}
   monPanelUI: {fileID: 2584676360073964703}
+  isInPCZone: 0
   linkedQueue: {fileID: 1161759545539869489}
   throwCooldown: 2
 --- !u!114 &5563358291241141472

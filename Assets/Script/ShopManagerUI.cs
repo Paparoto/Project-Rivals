@@ -89,6 +89,10 @@ public class ShopManagerUI : MonoBehaviour
 
     void Update()
 {
+        for (int i = 0; i < p1Rows.Count; i++)
+        p1Rows[i].UpdateStock();
+    for (int i = 0; i < p2Rows.Count; i++)
+        p2Rows[i].UpdateStock();
     
     if (p1Rows.Count == 0 || p2Rows.Count == 0) return;
     // --- JOUEUR 1 (W / S / E) + Manette 1 (joystick haut/bas + carré = button 2) ---
