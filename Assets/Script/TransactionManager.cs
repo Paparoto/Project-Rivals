@@ -58,8 +58,6 @@ public class TransactionManager : MonoBehaviour
 
     void Start()
     {
-        Product apple1 = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", Apple);
-        player1.inventory.Add(apple1);
         player1.money = 500;
 
         RefreshVisuals();
