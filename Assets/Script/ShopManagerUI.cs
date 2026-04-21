@@ -60,9 +60,9 @@ public class ShopManagerUI : MonoBehaviour
         catalog.Add(new TransactionManager.Product("Cookies", "Divers", 5, 15, "Plus rapide +20%", "None", prefabCookie));
         catalog.Add(new TransactionManager.Product("Thon", "Poisson", 15, 45, "None", "Reduit client-10%", prefabThon));
         catalog.Add(new TransactionManager.Product("Saumon", "Poisson", 10, 30, "None", "Chat qui vole", prefabSaumon));
-        catalog.Add(new TransactionManager.Product("Fromagebleu", "Divers", 30, 80, "None", "Odeur forte", prefabFromageBleu));
+        catalog.Add(new TransactionManager.Product("Fromage bleu", "Divers", 30, 80, "None", "Odeur forte", prefabFromageBleu));
         catalog.Add(new TransactionManager.Product("Emmental", "Divers", 10, 25, "None", "None", prefabEmmental));
-        catalog.Add(new TransactionManager.Product("Pomme", "Legumes", 5, 15, "Lancer banane", "None", prefabPomme));
+        catalog.Add(new TransactionManager.Product("pomme", "Legumes", 5, 15, "Lancer banane", "None", prefabPomme));
         catalog.Add(new TransactionManager.Product("Melon", "Legumes", 20, 50, "None", "Pourri (moyen)", prefabMelon));
 
         foreach (var p in catalog)
