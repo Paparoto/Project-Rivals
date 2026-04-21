@@ -31,18 +31,27 @@ public class PlayerMovement3D : MonoBehaviour
 
     [Header("Zones d'interaction")]
     public GameObject PCTargetZone;   // Glisse le PC ici (PC Gauche pour J1, PC Droite pour J2)
-    public GameObject PoissonZone;    // Glisse l'étagère Poisson
-    public GameObject ViandeZone;     // Glisse l'étagère Viande
-    public GameObject SucreZone;      // Glisse l'étagère Sucré
-    public GameObject CashierTargetZone; // Glisse la zone de la caisse ici
-    
+
+    [Header("Zones d'étagères")]
+    public GameObject TargetZone1;
+    public GameObject TargetZone2;
+    public GameObject TargetZone3;
+    public GameObject TargetZone4;
+
+    private bool isInZone1, isInZone2, isInZone3, isInZone4;
+
+    [Header("Caisse et Inventaire")]
+    public GameObject CashierTargetZone;
+    public QueueManager linkedQueue;
+    public Transform handTransform; // Objet vide enfant du joueur pour porter l'objet
+    private GameObject heldObject;  // L'objet actuellement tenu
+
 
     [Header("Interface PC")]
     public GameObject monPanelUI;     // Glisse le Panel UI ici
     public bool isInPCZone = false;  // État de présence devant le PC
 
-    [Header("Interface Caisse")]
-    public QueueManager linkedQueue;     // Glisse le QueueManager correspondant ici
+    
     private bool isInCashierZone = false;
 
     void Start()
@@ -64,7 +73,6 @@ public class PlayerMovement3D : MonoBehaviour
             if (qm.assignedPlayer == (gamepadIndex + 1))
             {
                 linkedQueue = qm;
-                Debug.Log($"Joueur {gamepadIndex + 1} a trouvé son QueueManager sur la Camera.");
             }
         }
     }
@@ -152,23 +160,60 @@ public class PlayerMovement3D : MonoBehaviour
             }
         }
 
-        // === INTERACTION CAISSE ===
-        if (isInCashierZone)
+
+        string btnInteract = "joystick " + (gamepadIndex + 1) + " button 1";
+
+        if (Input.GetKeyDown(btnInteract))
         {
-            string interactionButton = "joystick " + (gamepadIndex + 1) + " button 1";
+            // DEBUG : Apparaît à chaque fois que tu appuies sur le bouton
+            Debug.Log("Bouton appuyé par Joueur " + (gamepadIndex + 1));
 
-            if (Input.GetKeyDown(interactionButton))
+            if (isInCashierZone)
             {
-                if (linkedQueue != null)
-                {
-                    // On ordonne au client d'afficher sa bulle
-                    linkedQueue.TriggerFirstClientBubble();
-
-                    // On affiche aussi dans la console pour être sûr
-                    Debug.Log("Le joueur parle au client. Produit demandé : " + linkedQueue.GetFirstClientProductName());
-                }
+                GererCaisse();
+            }
+            else
+            {
+                // On essaie de ramasser si on n'est pas à la caisse
+                TesterRamassageEtagere();
             }
         }
+        void GererCaisse()
+{
+    if (linkedQueue == null) return;
+
+    // CAS 1 : On tient un objet, on essaie de le vendre
+    if (heldObject != null)
+    {
+        string nomVoulu = linkedQueue.GetFirstClientProductName();
+        
+        // Vérification si l'objet en main est le bon
+        if (heldObject.name.Contains(nomVoulu))
+        {
+            Debug.Log("Vente réussie !");
+            
+            // Transaction
+            TransactionManager.PlayerData pData = (gamepadIndex == 0) ? transactionManager.player1 : transactionManager.player2;
+            transactionManager.Sell(pData, linkedQueue.GetFirstClientProduct());
+
+            // On vide la main
+            Destroy(heldObject);
+            heldObject = null;
+
+            // Le client s'en va
+            linkedQueue.ServeClient();
+        }
+        else
+        {
+            Debug.Log("Le client ne veut pas ça, il veut : " + nomVoulu);
+        }
+    }
+    // CAS 2 : Main vide, on demande au client ce qu'il veut
+    else
+    {
+        linkedQueue.TriggerFirstClientBubble();
+    }
+}
     }
 
 public float throwCooldown = 2f; // modifiable dans l'Inspector
@@ -242,53 +287,171 @@ void ThrowObject()
     }
     private void OnTriggerEnter(Collider other)
     {
-        // 1. Détection du PC (pour activer l'interaction plus tard dans Update)
+        // 1. Détection du PC
         if (PCTargetZone != null && other.gameObject == PCTargetZone)
         {
             isInPCZone = true;
-            Debug.Log("Joueur " + (gamepadIndex + 1) + " est devant son PC. Appuyez sur Bouton 1 pour le panel.");
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " est devant son PC.");
         }
 
-        // 2. Détection Étagère Poisson
-        if (PoissonZone != null && other.gameObject == PoissonZone)
-        {
-            Debug.Log("Message le joueur " + (gamepadIndex + 1) + " : Voici le rayon POISSON 🐟");
-        }
-
-        // 3. Détection Étagère Viande
-        if (ViandeZone != null && other.gameObject == ViandeZone)
-        {
-            Debug.Log("Message le joueur " + (gamepadIndex + 1) + ": Voici le rayon VIANDE 🥩");
-        }
-
-        // 4. Détection Étagère Sucré
-        if (SucreZone != null && other.gameObject == SucreZone)
-        {
-            Debug.Log("Message le joueur " + (gamepadIndex + 1) + ": Voici le rayon SUCRÉ 🍬");
-        }
-            
+        // 2. Détection de la Caisse
         if (CashierTargetZone != null && other.gameObject == CashierTargetZone)
         {
             isInCashierZone = true;
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " est à la caisse.");
+        }
+
+        // 3. Détection des 4 Zones d'étagères
+        if (TargetZone1 != null && other.gameObject == TargetZone1)
+        {
+            isInZone1 = true;
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " : Zone 1 (Viande)");
+        }
+        else if (TargetZone2 != null && other.gameObject == TargetZone2)
+        {
+            isInZone2 = true;
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " : Zone 2 (Divers)");
+        }
+        else if (TargetZone3 != null && other.gameObject == TargetZone3)
+        {
+            isInZone3 = true;
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " : Zone 3 (Poisson)");
+        }
+        else if (TargetZone4 != null && other.gameObject == TargetZone4)
+        {
+            isInZone4 = true;
+            Debug.Log("Joueur " + (gamepadIndex + 1) + " : Zone 4 (Legumes)");
         }
     }
 
-
     private void OnTriggerExit(Collider other)
     {
-        // Quand on s'éloigne du PC, on désactive la possibilité d'appuyer sur le bouton
+        // Sortie du PC
         if (PCTargetZone != null && other.gameObject == PCTargetZone)
         {
             isInPCZone = false;
-
-            // Optionnel : On peut aussi éteindre le panel automatiquement quand il part
             if (monPanelUI != null) monPanelUI.SetActive(false);
-
             Debug.Log("Joueur " + (gamepadIndex + 1) + " s'est éloigné du PC.");
         }
+
+        // Sortie de la Caisse
         if (CashierTargetZone != null && other.gameObject == CashierTargetZone)
         {
             isInCashierZone = false;
+        }
+
+        // Sortie des Zones d'étagères
+        if (other.gameObject == TargetZone1) isInZone1 = false;
+        if (other.gameObject == TargetZone2) isInZone2 = false;
+        if (other.gameObject == TargetZone3) isInZone3 = false;
+        if (other.gameObject == TargetZone4) isInZone4 = false;
+    }
+    void TesterRamassageEtagere()
+    {
+        if (heldObject != null) return; // On tient déjà quelque chose
+        if (linkedQueue == null) return;
+
+        GameObject prefabVoulu = linkedQueue.GetFirstClientRequest();
+        string cat = linkedQueue.GetFirstClientCategory();
+
+        if (prefabVoulu == null)
+        {
+            Debug.Log("Le client n'a pas encore fait de commande.");
+            return;
+        }
+
+        bool auBonEndroit = false;
+
+        // --- MAPPING DES CATÉGORIES ---
+        // Note : attention aux majuscules et au 's' (Legumes vs Legume)
+        if (cat.Contains("Viande") && isInZone1) auBonEndroit = true;
+        else if (cat.Contains("Legume") && isInZone2) auBonEndroit = true;
+        else if (cat.Contains("Divers") && isInZone3) auBonEndroit = true;
+        else if (cat.Contains("Poisson") && isInZone4) auBonEndroit = true;
+        // Si tes fruits/desserts sont dans "Divers", ça passera en zone 3
+
+        if (auBonEndroit)
+        {
+            heldObject = Instantiate(prefabVoulu, handTransform.position, handTransform.rotation);
+            heldObject.transform.SetParent(handTransform);
+            heldObject.name = prefabVoulu.name; // Nettoie le nom pour la vente
+
+            if (heldObject.GetComponent<Rigidbody>())
+                heldObject.GetComponent<Rigidbody>().isKinematic = true;
+
+            Debug.Log("SUCCÈS : Objet ramassé !");
+        }
+        else
+        {
+            Debug.Log("ERREUR : Mauvaise zone pour " + cat + " (Zones: Z1=" + isInZone1 + ", Z2=" + isInZone2 + ")");
+        }
+    }
+
+    // Fonction pour vendre
+    void VendreObjetAuClient()
+    {
+        string nomVoulu = linkedQueue.GetFirstClientProductName();
+
+        // On vérifie si l'objet dans notre main est le bon
+        if (heldObject.name.Contains(nomVoulu))
+        {
+            Debug.Log("Merci ! Vente effectuée.");
+
+            // 1. Calcul de la transaction financière
+            TransactionManager.PlayerData pData = (gamepadIndex == 0) ? transactionManager.player1 : transactionManager.player2;
+            TransactionManager.Product produitComplet = linkedQueue.GetFirstClientProduct();
+
+            if (transactionManager != null && produitComplet != null)
+            {
+                transactionManager.Sell(pData, produitComplet); // Ajoute l'argent et retire du stock
+            }
+
+            // 2. Détruire l'objet visuel dans la main
+            Destroy(heldObject);
+            heldObject = null;
+
+            // 3. Faire partir le client et faire avancer la file
+            linkedQueue.ServeClient();
+        }
+        else
+        {
+            Debug.Log("Le client ne veut pas cet objet ! Il veut : " + nomVoulu);
+        }
+    }
+    void GererCaisse()
+    {
+        if (linkedQueue == null) return;
+
+        // CAS 1 : On tient un objet, on essaie de le vendre
+        if (heldObject != null)
+        {
+            string nomVoulu = linkedQueue.GetFirstClientProductName();
+
+            // Vérification si l'objet en main est le bon
+            if (heldObject.name.Contains(nomVoulu))
+            {
+                Debug.Log("Vente réussie !");
+
+                // Transaction
+                TransactionManager.PlayerData pData = (gamepadIndex == 0) ? transactionManager.player1 : transactionManager.player2;
+                transactionManager.Sell(pData, linkedQueue.GetFirstClientProduct());
+
+                // On vide la main
+                Destroy(heldObject);
+                heldObject = null;
+
+                // Le client s'en va
+                linkedQueue.ServeClient();
+            }
+            else
+            {
+                Debug.Log("Le client ne veut pas ça, il veut : " + nomVoulu);
+            }
+        }
+        // CAS 2 : Main vide, on demande au client ce qu'il veut
+        else
+        {
+            linkedQueue.TriggerFirstClientBubble();
         }
     }
 }

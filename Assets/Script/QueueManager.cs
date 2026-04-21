@@ -146,4 +146,18 @@ public class QueueManager : MonoBehaviour
             }
         }
     }
+
+    // 3. Pour savoir à quelle étagère aller
+    public string GetFirstClientCategory()
+    {
+        if (clientList.Count > 0 && clientList[0] != null) return clientList[0].GetComponent<Client>().requestedProductCategory;
+        return "";
+    }
+
+    // 4. Pour la vente finale (TransactionManager)
+    public TransactionManager.Product GetFirstClientProduct()
+    {
+        if (clientList.Count > 0 && clientList[0] != null) return clientList[0].GetComponent<Client>().requestedProduct;
+        return null;
+    }
 }
