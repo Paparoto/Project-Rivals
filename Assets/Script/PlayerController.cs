@@ -28,6 +28,11 @@ public class PlayerMovement3D : MonoBehaviour
 
     private bool canThrow = true; // évite de lancer en boucle si la gâchette reste enfoncée
 
+    [Header("Zones d'interaction PC")]
+    public GameObject targetZone;
+    private bool isInZone = false;
+    public GameObject monPanelUI; // Glisse le Panel (Gauche ou Droite) ici
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -35,6 +40,8 @@ public class PlayerMovement3D : MonoBehaviour
 
         axisH = $"joystick {gamepadIndex + 1} axis 0";
         axisV = $"joystick {gamepadIndex + 1} axis 1";
+
+        if (monPanelUI != null) monPanelUI.SetActive(false);
     }
     private bool isStunned = false;
 
@@ -102,6 +109,22 @@ public class PlayerMovement3D : MonoBehaviour
 
         // === LANCER (gâchette droite = axis 5 sur Xbox) ===
         HandleThrow();
+        // === INTERACTION SPECIAL ===
+        if (isInZone)
+        {
+            string interactionButton = "joystick " + (gamepadIndex + 1) + " button 1";
+
+            if (Input.GetKeyDown(interactionButton))
+            {
+                Debug.Log("MESSAGE SPECIAL : Le Joueur " + (gamepadIndex + 1) + " a activé son ordinateur !");
+
+                if (monPanelUI != null)
+                {
+                    // Affiche le panel s'il est caché, ou le cache s'il est affiché (Toggle)
+                    monPanelUI.SetActive(!monPanelUI.activeSelf);
+                }
+            }
+        }
     }
 
 public float throwCooldown = 2f; // modifiable dans l'Inspector
@@ -157,5 +180,20 @@ void HandleThrow()
         Vector3 velocity = movement * speed;
         velocity.y = rb.linearVelocity.y;
         rb.linearVelocity = velocity;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (targetZone != null && other.gameObject == targetZone)
+        {
+            isInZone = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (targetZone != null && other.gameObject == targetZone)
+        {
+            isInZone = false;
+        }
     }
 }
