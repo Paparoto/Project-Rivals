@@ -86,34 +86,32 @@ public class ShopManagerUI : MonoBehaviour
     // Le reste du code (Update, Navigate, TryBuy) NE CHANGE PAS.
 
     void Update()
+{
+    
+    if (p1Rows.Count == 0 || p2Rows.Count == 0) return;
+
+    // --- JOUEUR 1 (W / S / E) + Manette 1 (joystick haut/bas + carré = button 2) ---
+    if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown("joystick 1 button 6")) 
+        Navigate(ref p1Index, -1, p1Rows, p1Scroll);
+    if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown("joystick 1 button 7")) 
+        Navigate(ref p1Index, 1, p1Rows, p1Scroll);
+    if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown("joystick 1 button 0"))
     {
-        if (p1Rows.Count == 0 || p2Rows.Count == 0) return;
-
-        // --- JOUEUR 1 (W / S / E) ---
-        if (Input.GetKeyDown(KeyCode.W)) Navigate(ref p1Index, -1, p1Rows, p1Scroll);
-        if (Input.GetKeyDown(KeyCode.S)) Navigate(ref p1Index, 1, p1Rows, p1Scroll);
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            // EXECUTE L'ACHAT POUR LE P1
-            if (transactionManager.Buy(transactionManager.player1, catalog[p1Index]))
-            {
-                p1Rows[p1Index].UpdateStock(); // Met � jour le texte Stk:X
-            }
-        }
-
-        // --- JOUEUR 2 (Fl�ches / RightShift) ---
-        if (Input.GetKeyDown(KeyCode.UpArrow)) Navigate(ref p2Index, -1, p2Rows, p2Scroll);
-        if (Input.GetKeyDown(KeyCode.DownArrow)) Navigate(ref p2Index, 1, p2Rows, p2Scroll);
-
-        if (Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            // EXECUTE L'ACHAT POUR LE P2
-            if (transactionManager.Buy(transactionManager.player2, catalog[p2Index]))
-            {
-                p2Rows[p2Index].UpdateStock(); // Met � jour le texte Stk:X
-            }
-        }
+        if (transactionManager.Buy(transactionManager.player1, catalog[p1Index]))
+            p1Rows[p1Index].UpdateStock();
     }
+
+    // --- JOUEUR 2 (Flèches / RightShift) + Manette 2 (joystick haut/bas + carré = button 2) ---
+    if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("joystick 2 button 6")) 
+        Navigate(ref p2Index, -1, p2Rows, p2Scroll);
+    if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown("joystick 2 button 7")) 
+        Navigate(ref p2Index, 1, p2Rows, p2Scroll);
+    if (Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown("joystick 2 button 0"))
+    {
+        if (transactionManager.Buy(transactionManager.player2, catalog[p2Index]))
+            p2Rows[p2Index].UpdateStock();
+    }
+}
 
     void Navigate(ref int index, int dir, List<ProductUIItem> list, ScrollRect scroll)
     {
