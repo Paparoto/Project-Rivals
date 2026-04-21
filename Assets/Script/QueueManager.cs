@@ -20,6 +20,8 @@ public class QueueManager : MonoBehaviour
 
     private List<GameObject> clientList = new List<GameObject>();
 
+    
+
     void Start()
     {
         Invoke("SpawnClient", spawnDelay + 0.5f);
@@ -119,5 +121,22 @@ public class QueueManager : MonoBehaviour
             }
         }
         return null;
+    }
+    // Fonction à ajouter pour renvoyer le nom du produit au joueur
+    public string GetFirstClientProductName()
+    {
+        if (clientList.Count > 0 && clientList[0] != null)
+        {
+            Client client = clientList[0].GetComponent<Client>();
+            if (client != null)
+            {
+                // On renvoie le nom du produit stocké dans le script Client
+                if (string.IsNullOrEmpty(client.requestedProductName))
+                    return "Rien (en attente)";
+
+                return client.requestedProductName;
+            }
+        }
+        return "Aucun client à la caisse";
     }
 }

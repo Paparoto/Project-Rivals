@@ -33,10 +33,16 @@ public class PlayerMovement3D : MonoBehaviour
     public GameObject PoissonZone;    // Glisse l'étagère Poisson
     public GameObject ViandeZone;     // Glisse l'étagère Viande
     public GameObject SucreZone;      // Glisse l'étagère Sucré
+    public GameObject CashierTargetZone; // Glisse la zone de la caisse ici
+    
 
     [Header("Interface PC")]
     public GameObject monPanelUI;     // Glisse le Panel UI ici
     private bool isInPCZone = false;  // État de présence devant le PC
+
+    [Header("Interface Caisse")]
+    public QueueManager linkedQueue;     // Glisse le QueueManager correspondant ici
+    private bool isInCashierZone = false;
 
     void Start()
     {
@@ -131,6 +137,21 @@ public class PlayerMovement3D : MonoBehaviour
                 }
             }
         }
+
+        if (isInCashierZone)
+        {
+            string interactionButton = "joystick " + (gamepadIndex + 1) + " button 1";
+
+            if (Input.GetKeyDown(interactionButton))
+            {
+                if (linkedQueue != null)
+                {
+                    // On récupère le nom du produit via une petite fonction dans QueueManager
+                    string food = linkedQueue.GetFirstClientProductName();
+                    Debug.Log("INFO CLIENT : Le client du joueur " + (gamepadIndex + 1) + "demande actuellement : " + food);
+                }
+            }
+        }
     }
 
 public float throwCooldown = 2f; // modifiable dans l'Inspector
@@ -213,6 +234,11 @@ void HandleThrow()
         {
             Debug.Log("Message le joueur " + (gamepadIndex + 1) + ": Voici le rayon SUCRÉ 🍬");
         }
+
+        if (CashierTargetZone != null && other.gameObject == CashierTargetZone)
+        {
+            isInCashierZone = true;
+        }
     }
 
 
@@ -227,6 +253,10 @@ void HandleThrow()
             if (monPanelUI != null) monPanelUI.SetActive(false);
 
             Debug.Log("Joueur " + (gamepadIndex + 1) + " s'est éloigné du PC.");
+        }
+        if (CashierTargetZone != null && other.gameObject == CashierTargetZone)
+        {
+            isInCashierZone = false;
         }
     }
 }
