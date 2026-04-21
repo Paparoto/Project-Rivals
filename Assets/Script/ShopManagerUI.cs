@@ -23,7 +23,7 @@ public class ShopManagerUI : MonoBehaviour
     public Color selectedColor = new Color(0f, 1f, 0f, 0.4f);
     public Color normalColor = new Color(0f, 0f, 0f, 0.6f);
 
-    [Header("Modèles 3D des produits")]
+    [Header("Modï¿½les 3D des produits")]
     public GameObject prefabEntrecote;
     public GameObject prefabPoulet;
     public GameObject prefabTomate;
@@ -49,7 +49,7 @@ public class ShopManagerUI : MonoBehaviour
     void CreateCatalog()
     {
         catalog.Clear();
-        // Ajoute bien le nom de la variable prefab à la fin de chaque ligne
+        // Ajoute bien le nom de la variable prefab ï¿½ la fin de chaque ligne
         catalog.Add(new TransactionManager.Product("Entrecote", "Viande", 30, 75, "None", "Plus lent (-20%)", prefabEntrecote));
         catalog.Add(new TransactionManager.Product("Poulet roti", "Viande", 15, 40, "None", "Refroidir (Prix:30)", prefabPoulet));
         catalog.Add(new TransactionManager.Product("Tomate", "Legume", 5, 15, "Lancer tomate", "Pourri vite", prefabTomate));
@@ -77,7 +77,7 @@ public class ShopManagerUI : MonoBehaviour
         GameObject go = Instantiate(productPrefab, parent);
         ProductUIItem ui = go.GetComponent<ProductUIItem>();
 
-        // On passe le produit et le joueur (le manager est déjà accessible via transactionManager)
+        // On passe le produit et le joueur (le manager est dï¿½jï¿½ accessible via transactionManager)
         ui.Setup(p, owner);
 
         return ui;
@@ -86,34 +86,32 @@ public class ShopManagerUI : MonoBehaviour
     // Le reste du code (Update, Navigate, TryBuy) NE CHANGE PAS.
 
     void Update()
+{
+    
+    if (p1Rows.Count == 0 || p2Rows.Count == 0) return;
+
+    // --- JOUEUR 1 (W / S / E) + Manette 1 (joystick haut/bas + carrÃ© = button 2) ---
+    if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown("joystick 1 button 6")) 
+        Navigate(ref p1Index, -1, p1Rows, p1Scroll);
+    if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown("joystick 1 button 7")) 
+        Navigate(ref p1Index, 1, p1Rows, p1Scroll);
+    if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown("joystick 1 button 0"))
     {
-        if (p1Rows.Count == 0 || p2Rows.Count == 0) return;
-
-        // --- JOUEUR 1 (W / S / E) ---
-        if (Input.GetKeyDown(KeyCode.W)) Navigate(ref p1Index, -1, p1Rows, p1Scroll);
-        if (Input.GetKeyDown(KeyCode.S)) Navigate(ref p1Index, 1, p1Rows, p1Scroll);
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            // EXECUTE L'ACHAT POUR LE P1
-            if (transactionManager.Buy(transactionManager.player1, catalog[p1Index]))
-            {
-                p1Rows[p1Index].UpdateStock(); // Met à jour le texte Stk:X
-            }
-        }
-
-        // --- JOUEUR 2 (Flèches / RightShift) ---
-        if (Input.GetKeyDown(KeyCode.UpArrow)) Navigate(ref p2Index, -1, p2Rows, p2Scroll);
-        if (Input.GetKeyDown(KeyCode.DownArrow)) Navigate(ref p2Index, 1, p2Rows, p2Scroll);
-
-        if (Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            // EXECUTE L'ACHAT POUR LE P2
-            if (transactionManager.Buy(transactionManager.player2, catalog[p2Index]))
-            {
-                p2Rows[p2Index].UpdateStock(); // Met à jour le texte Stk:X
-            }
-        }
+        if (transactionManager.Buy(transactionManager.player1, catalog[p1Index]))
+            p1Rows[p1Index].UpdateStock();
     }
+
+    // --- JOUEUR 2 (FlÃ¨ches / RightShift) + Manette 2 (joystick haut/bas + carrÃ© = button 2) ---
+    if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("joystick 2 button 6")) 
+        Navigate(ref p2Index, -1, p2Rows, p2Scroll);
+    if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown("joystick 2 button 7")) 
+        Navigate(ref p2Index, 1, p2Rows, p2Scroll);
+    if (Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown("joystick 2 button 0"))
+    {
+        if (transactionManager.Buy(transactionManager.player2, catalog[p2Index]))
+            p2Rows[p2Index].UpdateStock();
+    }
+}
 
     void Navigate(ref int index, int dir, List<ProductUIItem> list, ScrollRect scroll)
     {
