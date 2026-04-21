@@ -51,11 +51,11 @@ public class ShopManagerUI : MonoBehaviour
         catalog.Clear();
         // Ajoute bien le nom de la variable prefab � la fin de chaque ligne
         catalog.Add(new TransactionManager.Product("Entrecote", "Viande", 30, 75, "None", "Plus lent (-20%)", prefabEntrecote));
-        catalog.Add(new TransactionManager.Product("Boeuf roti", "Viande", 15, 40, "None", "Refroidir (Prix:30)", prefabRoti));
+        catalog.Add(new TransactionManager.Product("Boeuf", "Viande", 15, 40, "None", "Refroidir (Prix:30)", prefabRoti));
         catalog.Add(new TransactionManager.Product("Tomate", "Legume", 5, 15, "Lancer tomate", "Pourri vite", prefabTomate));
         catalog.Add(new TransactionManager.Product("Poivron", "Legume", 5, 20, "Ne pourri pas", "Reduit client-10%", prefabPoivron));
         catalog.Add(new TransactionManager.Product("Gateau", "Dessert", 30, 75, "None", "Stock +2", prefabGateau));
-        catalog.Add(new TransactionManager.Product("Cookie", "Dessert", 5, 15, "Plus rapide +20%", "None", prefabCookie));
+        catalog.Add(new TransactionManager.Product("Cookies", "Dessert", 5, 15, "Plus rapide +20%", "None", prefabCookie));
         catalog.Add(new TransactionManager.Product("Thon", "Poisson", 15, 45, "None", "Reduit client-10%", prefabThon));
         catalog.Add(new TransactionManager.Product("Saumon", "Poisson", 10, 30, "None", "Chat qui vole", prefabSaumon));
         catalog.Add(new TransactionManager.Product("Fromage bleu", "Fromage", 30, 80, "None", "Odeur forte", prefabFromageBleu));

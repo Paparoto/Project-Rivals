@@ -2,22 +2,28 @@
 using UnityEngine;
 using System.Linq;
 using TMPro;
+
 public class TransactionManager : MonoBehaviour
 {
+    // --- AJOUT : LE SINGLETON ---
+    public static TransactionManager Instance;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
+    // ----------------------------
+
     [Header("Lien avec le Visuel")]
-    // Glisse l'objet "Food" ici dans l'inspecteur
-    public FoodVisualizer foodVisualizer; 
+    public FoodVisualizer foodVisualizer; // Gardé pour compatibilité, mais on peut faire mieux
 
     [Header("Modèles des Produits (Prefabs)")]
     public GameObject Apple;
-    // Ajoute d'autres GameObjects ici si besoin (ex: public GameObject Bread;)
+
     [Header("UI Argent")]
     public TMP_Text moneyTextP1;
     public TMP_Text moneyTextP2;
 
-    // ======================
-    // 📦 CLASSE PRODUCT
-    // ======================
     public class Product
     {
         public string name;
@@ -40,9 +46,6 @@ public class TransactionManager : MonoBehaviour
         }
     }
 
-    // ======================
-    // 👤 CLASSE PLAYER
-    // ======================
     public class PlayerData
     {
         public int money = 100;
@@ -55,16 +58,13 @@ public class TransactionManager : MonoBehaviour
 
     void Start()
     {
-       Product apple1 = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", Apple);
-    player1.inventory.Add(apple1);
-    player1.money = 500;
+        Product apple1 = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", Apple);
+        player1.inventory.Add(apple1);
+        player1.money = 500;
 
-    RefreshVisuals();
+        RefreshVisuals();
     }
 
-    // ======================
-    // 🛒 SYSTÈME D'ACHAT
-    // ======================
     public bool Buy(PlayerData player, Product product)
     {
         if (player.money < product.buyPrice)
@@ -75,38 +75,22 @@ public class TransactionManager : MonoBehaviour
 
         player.money -= product.buyPrice;
         player.inventory.Add(product);
-
-        Debug.Log($"Acheté : {product.name}. Argent restant : {player.money}");
         
-        RefreshVisuals(); // Mise à jour visuelle
+        RefreshVisuals();
         return true;
     }
 
-    // ======================
-    // 💸 SYSTÈME DE VENTE
-    // ======================
     public void Sell(PlayerData player, Product product)
     {
-        if (!player.inventory.Contains(product))
-        {
-            Debug.Log("Produit introuvable");
-            return;
-        }
+        if (!player.inventory.Contains(product)) return;
 
         player.inventory.Remove(product);
         player.money += product.sellPrice;
+        player.profits.Add(product.sellPrice - product.buyPrice);
 
-        int profit = product.sellPrice - product.buyPrice;
-        player.profits.Add(profit);
-
-        Debug.Log($"Vendu : {product.name}. Profit : {profit}");
-
-        RefreshVisuals(); // Mise à jour visuelle
+        RefreshVisuals();
     }
 
-    // ======================
-    // 📊 CALCULS ET UTILITAIRES
-    // ======================
     public int GetProfit(PlayerData player)
     {
         int total = 0;
@@ -114,16 +98,16 @@ public class TransactionManager : MonoBehaviour
         return total;
     }
 
-    // Fonction interne pour rafraîchir l'affichage via le FoodVisualizer
     private void RefreshVisuals()
     {
-        if (foodVisualizer != null)
-            foodVisualizer.Refresh();
+        // On rafraîchit TOUS les scripts de visuels dans la scène (P1 et P2)
+        FoodVisualizer[] allVisuals = FindObjectsOfType<FoodVisualizer>();
+        foreach (FoodVisualizer fv in allVisuals)
+        {
+            fv.Refresh();
+        }
 
-        if (moneyTextP1 != null)
-            moneyTextP1.text = $"{player1.money}$";
-
-        if (moneyTextP2 != null)
-            moneyTextP2.text = $"{player2.money}$";
+        if (moneyTextP1 != null) moneyTextP1.text = $"{player1.money}$";
+        if (moneyTextP2 != null) moneyTextP2.text = $"{player2.money}$";
     }
 }
