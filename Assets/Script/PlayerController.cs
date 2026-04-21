@@ -55,17 +55,20 @@ public class PlayerMovement3D : MonoBehaviour
     }
     void Update()
     {
+        
+        float h2 = Input.GetAxisRaw("joystick 2 axis 0");
+        float v2 = Input.GetAxisRaw("joystick 2 axis 1");
+
+
         movement = Vector3.zero;
         if (isStunned) return;
-        // === MANETTE ===
         float h = 0f;
         float v = 0f;
 
-        if (gamepadIndex == 0)
-        {
-            h = Input.GetAxisRaw(axisH);
-            v = Input.GetAxisRaw(axisV);
-        }
+
+        h = Input.GetAxisRaw(axisH);
+        v = Input.GetAxisRaw(axisV);
+        
 
         bool usingGamepad = Mathf.Abs(h) > 0.2f || Mathf.Abs(v) > 0.2f;
 
