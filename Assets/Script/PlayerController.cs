@@ -138,6 +138,7 @@ public class PlayerMovement3D : MonoBehaviour
             }
         }
 
+        // === INTERACTION CAISSE ===
         if (isInCashierZone)
         {
             string interactionButton = "joystick " + (gamepadIndex + 1) + " button 1";
@@ -146,9 +147,11 @@ public class PlayerMovement3D : MonoBehaviour
             {
                 if (linkedQueue != null)
                 {
-                    // On récupère le nom du produit via une petite fonction dans QueueManager
-                    string food = linkedQueue.GetFirstClientProductName();
-                    Debug.Log("INFO CLIENT : Le client du joueur " + (gamepadIndex + 1) + "demande actuellement : " + food);
+                    // On ordonne au client d'afficher sa bulle
+                    linkedQueue.TriggerFirstClientBubble();
+
+                    // On affiche aussi dans la console pour être sûr
+                    Debug.Log("Le joueur parle au client. Produit demandé : " + linkedQueue.GetFirstClientProductName());
                 }
             }
         }
@@ -234,7 +237,7 @@ void HandleThrow()
         {
             Debug.Log("Message le joueur " + (gamepadIndex + 1) + ": Voici le rayon SUCRÉ 🍬");
         }
-
+            
         if (CashierTargetZone != null && other.gameObject == CashierTargetZone)
         {
             isInCashierZone = true;

@@ -81,19 +81,15 @@ public class QueueManager : MonoBehaviour
             Client client = clientList[i].GetComponent<Client>();
             client.SetTarget(waitPoints[i].position);
 
+            // Dans QueueManager.cs
             if (i == 0)
             {
                 client.SetAsFirstInQueue();
-
-                // On demande au client de choisir un produit dans l'inventaire
-                // Pour que le joueur puisse ensuite lire cette info
                 TransactionManager.PlayerData pData = (assignedPlayer == 1) ? transactionManager.player1 : transactionManager.player2;
 
                 if (pData.inventory.Count > 0)
                 {
-                    client.Request(pData);
-                    // Note : On ne "pousse" plus l'info vers le joueur, 
-                    // c'est le joueur qui viendra lire 'GetFirstClientRequest'
+                    client.Request(pData); // Le client ne changera pas si hasChosenProduct est true
                 }
             }
         }
@@ -138,5 +134,16 @@ public class QueueManager : MonoBehaviour
             }
         }
         return "Aucun client à la caisse";
+    }
+    public void TriggerFirstClientBubble()
+    {
+        if (clientList.Count > 0 && clientList[0] != null)
+        {
+            Client client = clientList[0].GetComponent<Client>();
+            if (client != null)
+            {
+                client.AfficherMaBulle();
+            }
+        }
     }
 }

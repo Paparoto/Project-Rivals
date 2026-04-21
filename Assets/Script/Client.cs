@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Client : MonoBehaviour
 {
@@ -24,6 +26,12 @@ public class Client : MonoBehaviour
     [HideInInspector] public QueueManager queueManager;
 
     private CustomerSkinManager skinManager;
+
+    [Header("Bulle de Dialogue")]
+    public GameObject bulleObjet;
+    public TMP_Text texteProduit;
+
+    private bool hasChosenProduct = false;
 
     public void SetTarget(Vector3 newPos)
     {
@@ -78,16 +86,13 @@ public class Client : MonoBehaviour
 
         if (transactionManager != null)
         {
-            TransactionManager.PlayerData player = assignedPlayer == 1
-                ? transactionManager.player1
-                : transactionManager.player2;
+            TransactionManager.PlayerData player = assignedPlayer == 1 ? transactionManager.player1 : transactionManager.player2;
 
+            // Le client choisit son produit en secret
             GameObject result = Request(player);
 
-            if (result == null)
-            {
-                queueManager.RemoveClient(gameObject);
-            }
+            // ON NE MET PAS bulleObjet.SetActive(true) ICI !
+            // Le client a choisi, mais il attend que tu lui parles.
         }
     }
 
@@ -103,22 +108,28 @@ public class Client : MonoBehaviour
 
     public GameObject Request(TransactionManager.PlayerData player)
     {
+        // Si le client a déjà choisi un produit, on ne change pas !
+        if (hasChosenProduct) return this.gameObject;
+
         if (player.inventory == null || player.inventory.Count == 0)
             return null;
 
         int randomIndex = Random.Range(0, player.inventory.Count);
         requestedProduct = player.inventory[randomIndex];
 
-        requestedProductName     = requestedProduct.name;
+        requestedProductName = requestedProduct.name;
         requestedProductCategory = requestedProduct.category;
-        requestedProductPrice    = requestedProduct.sellPrice;
+        requestedProductPrice = requestedProduct.sellPrice;
 
+        hasChosenProduct = true; // On verrouille le choix
         return this.gameObject;
     }
 
     public void Leave(Vector3 exitPos)
     {
         if (isLeaving) return;
+
+        if (bulleObjet != null) bulleObjet.SetActive(false); // Cache la bulle
         if (skinManager == null)
             skinManager = GetComponent<CustomerSkinManager>();
 
@@ -135,5 +146,20 @@ public class Client : MonoBehaviour
         requestedProductName     = "";
         requestedProductCategory = "";
         requestedProductPrice    = 0;
+    }
+    public void AfficherMaBulle()
+    {
+        if (bulleObjet != null && texteProduit != null)
+        {
+            texteProduit.text = "Je veux : " + requestedProductName;
+            bulleObjet.SetActive(true);
+
+            // On a supprimé le Invoke("CacherBulle") pour que ça reste affiché !
+        }
+    }
+
+    private void CacherBulle()
+    {
+        if (bulleObjet != null) bulleObjet.SetActive(false);
     }
 }

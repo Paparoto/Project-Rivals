@@ -225,12 +225,12 @@ GameObject:
   - component: {fileID: 5519710257742329595}
   - component: {fileID: 138761796184810798}
   m_Layer: 0
-  m_Name: BullleDialogue
+  m_Name: BulleDialogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1165322925587429765
 RectTransform:
   m_ObjectHideFlags: 0
@@ -382,6 +382,8 @@ MonoBehaviour:
   requestedProductCategory: 
   requestedProductPrice: 0
   queueManager: {fileID: 0}
+  bulleObjet: {fileID: 7441765405134280286}
+  texteProduit: {fileID: 7022606130790432169}
 --- !u!23 &8862553498108545294
 MeshRenderer:
   m_ObjectHideFlags: 0
