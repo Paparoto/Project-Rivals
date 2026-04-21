@@ -18,11 +18,14 @@ public class QueueManager : MonoBehaviour
     public float minInterval = 7f;
     public float maxInterval = 10f;
 
+    [Header("Lien avec le ramassage")]
+    public TakeObject playerTakeScript; // Glisse ici le Joueur (celui qui a le script TakeObject)
+
     private List<GameObject> clientList = new List<GameObject>();
 
     void Start()
     {
-        Invoke("SpawnClient", spawnDelay);
+        Invoke("SpawnClient", spawnDelay + 0.5f);
     }
 
     void Update()
@@ -56,11 +59,10 @@ public class QueueManager : MonoBehaviour
     {
         if (clientList.Count > 0)
         {
-            GameObject clientToLeave = clientList[0];
-            clientList.RemoveAt(0);
+            // ... (ton code existant)
 
-            if (clientToLeave != null)
-                clientToLeave.GetComponent<Client>().Leave(exitPoint.position);
+            if (playerTakeScript != null)
+                playerTakeScript.objectToPickup = null; // On vide la main du joueur
 
             UpdateQueuePositions();
         }
@@ -80,7 +82,36 @@ public class QueueManager : MonoBehaviour
             client.SetTarget(waitPoints[i].position);
 
             if (i == 0)
+            {
                 client.SetAsFirstInQueue();
+
+                if (playerTakeScript != null)
+                {
+                    TransactionManager.PlayerData pData = (assignedPlayer == 1) ? transactionManager.player1 : transactionManager.player2;
+
+                    if (pData.inventory.Count > 0)
+                    {
+                        client.Request(pData);
+                        if (client.requestedProduct != null)
+                        {
+                            playerTakeScript.objectToPickup = client.requestedProduct.prefab;
+                            Debug.Log("Produit envoyé au joueur : " + client.requestedProduct.name);
+                        }
+                        else
+                        {
+                            Debug.LogError("Le produit demandé est null !");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("L'inventaire du Joueur " + assignedPlayer + " est VIDE. Le client ne peut rien demander.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Le slot PlayerTakeScript est VIDE dans l'inspecteur du QueueManager !");
+                }
+            }
         }
     }
 

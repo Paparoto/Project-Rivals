@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TakeObject : MonoBehaviour
 {
-    [SerializeField] private GameObject objectToPickup;
+    public GameObject objectToPickup;
 
     public GameObject heldObject;
     public KeyCode take;
@@ -32,5 +32,14 @@ public class TakeObject : MonoBehaviour
     {
         Destroy(heldObject);
         heldObject = null;
+    }
+
+    void OnValidate()
+    {
+        // Ce code s'exécute dès que la variable change
+        if (objectToPickup != null)
+        {
+            Debug.Log("TakeObject : J'ai bien reçu l'objet " + objectToPickup.name);
+        }
     }
 }

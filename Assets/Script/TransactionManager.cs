@@ -3,17 +3,16 @@ using UnityEngine;
 
 public class TransactionManager : MonoBehaviour
 {
-        void Start()
+    [Header("Modèles des Produits")]
+    public GameObject appleModel;
+    // ... (ajoute les autres modèles)
+
+    void Start()
     {
         // Produits de test
-        Product apple     = new Product("Pomme",      "Fruit",      2,  5,  "Régénère 10 HP",   "Aucun");
-        Product sword     = new Product("Épée",       "Arme",       50, 80, "+10 ATK",           "-5 DEF");
-        Product potion    = new Product("Potion",      "Consommable",10, 18, "Soigne 50 HP",      "Aucun");
-        Product shield    = new Product("Bouclier",   "Armure",     30, 55, "+15 DEF",           "-2 SPD");
-        Product bread     = new Product("Pain",       "Nourriture", 1,  3,  "Régénère 5 HP",    "Aucun");
-        Product bow       = new Product("Arc",        "Arme",       40, 65, "+8 ATK à distance", "-3 ATK mêlée");
+        Product apple = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", appleModel);
 
-        player1.inventory.AddRange(new List<Product> { apple, sword, potion, shield, bread, bow });
+        player1.inventory.AddRange(new List<Product> {apple});
         player1.money = 500;
 
         Debug.Log($"Inventaire player1 initialisé : {player1.inventory.Count} produits, {player1.money} pièces.");
@@ -25,14 +24,16 @@ public class TransactionManager : MonoBehaviour
     {
         public string name;
         public string category;
-
         public int buyPrice;
         public int sellPrice;
-
         public string bonus;
         public string malus;
 
-        public Product(string name, string category, int buyPrice, int sellPrice, string bonus, string malus)
+        // --- AJOUTE CETTE LIGNE ---
+        public GameObject prefab;
+
+        // MODIFIE LE CONSTRUCTEUR POUR INCLURE LE PREFAB
+        public Product(string name, string category, int buyPrice, int sellPrice, string bonus, string malus, GameObject prefab)
         {
             this.name = name;
             this.category = category;
@@ -40,6 +41,7 @@ public class TransactionManager : MonoBehaviour
             this.sellPrice = sellPrice;
             this.bonus = bonus;
             this.malus = malus;
+            this.prefab = prefab; // <-- Assigne le prefab ici
         }
     }
 
