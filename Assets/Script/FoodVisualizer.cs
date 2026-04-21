@@ -11,26 +11,45 @@ public class FoodVisualizer : MonoBehaviour
 
     public void Refresh()
     {
-        // On utilise l'Instance statique pour être sûr d'avoir le bon Manager
         if (TransactionManager.Instance == null) return;
 
-        // On prend la liste du bon joueur
+        // 1. Trouver le bon joueur et son inventaire
         List<TransactionManager.Product> inv;
+        PlayerMovement3D targetPlayerScript = null;
+        PlayerMovement3D[] allPlayers = FindObjectsByType<PlayerMovement3D>(FindObjectsSortMode.None);
+
         if (targetPlayer == PlayerChoice.Player1)
+        {
             inv = TransactionManager.Instance.player1.inventory;
+            targetPlayerScript = System.Array.Find(allPlayers, p => p.gamepadIndex == 0);
+        }
         else
+        {
             inv = TransactionManager.Instance.player2.inventory;
+            targetPlayerScript = System.Array.Find(allPlayers, p => p.gamepadIndex == 1);
+        }
+
+        // 2. Nom de l'objet porté par ce joueur
+        string itemInHand = (targetPlayerScript != null) ? targetPlayerScript.carriedProductName : "";
 
         Dictionary<string, int> displayedCount = new Dictionary<string, int>();
 
         foreach (Transform child in transform)
         {
             string cleanName = CleanName(child.name);
-            int amountInInventory = inv.Count(p => p.name == cleanName);
+
+            // Nombre d'exemplaires dans l'inventaire
+            int amountToDisplay = inv.Count(p => p.name == cleanName);
+
+            // SI LE JOUEUR TIENT CET OBJET, ON EN CACHE UN SUR L'ÉTAGÈRE
+            if (cleanName == itemInHand)
+            {
+                amountToDisplay--;
+            }
 
             if (!displayedCount.ContainsKey(cleanName)) displayedCount[cleanName] = 0;
 
-            if (displayedCount[cleanName] < amountInInventory)
+            if (displayedCount[cleanName] < amountToDisplay)
             {
                 child.gameObject.SetActive(true);
                 displayedCount[cleanName]++;
