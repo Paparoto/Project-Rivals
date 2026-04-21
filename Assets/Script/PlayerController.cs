@@ -199,19 +199,19 @@ void HandleThrow()
         // 2. Détection Étagère Poisson
         if (PoissonZone != null && other.gameObject == PoissonZone)
         {
-            Debug.Log("Message : Voici le rayon POISSON 🐟");
+            Debug.Log("Message le joueur " + (gamepadIndex + 1) + " : Voici le rayon POISSON 🐟");
         }
 
         // 3. Détection Étagère Viande
         if (ViandeZone != null && other.gameObject == ViandeZone)
         {
-            Debug.Log("Message : Voici le rayon VIANDE 🥩");
+            Debug.Log("Message le joueur " + (gamepadIndex + 1) + ": Voici le rayon VIANDE 🥩");
         }
 
         // 4. Détection Étagère Sucré
         if (SucreZone != null && other.gameObject == SucreZone)
         {
-            Debug.Log("Message : Voici le rayon SUCRÉ 🍬");
+            Debug.Log("Message le joueur " + (gamepadIndex + 1) + ": Voici le rayon SUCRÉ 🍬");
         }
     }
 
