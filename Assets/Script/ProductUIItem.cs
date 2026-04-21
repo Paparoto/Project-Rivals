@@ -9,7 +9,7 @@ public class ProductUIItem : MonoBehaviour
     public TMP_Text buyPriceText;
     public TMP_Text stockText;
 
-    [Header("Affichage Basculant (Détails)")]
+    [Header("Affichage Basculant (Dï¿½tails)")]
     public GameObject detailsPanel; // Glisse l'objet DetailsPanel ici
     public TMP_Text sellPriceText;
     public TMP_Text bonusText;
@@ -20,19 +20,31 @@ public class ProductUIItem : MonoBehaviour
 
     private TransactionManager.Product data;
     private TransactionManager.PlayerData owner;
+    [Header("Police")]
+    public TMP_FontAsset font;
 
     public void Setup(TransactionManager.Product p, TransactionManager.PlayerData plr)
     {
         data = p; owner = plr;
 
-        // On ne remplit que ce qui est visible au début
+        // On ne remplit que ce qui est visible au dï¿½but
+        if (font != null)
+    {
+        nameText.font = font;
+        buyPriceText.font = font;
+        stockText.font = font;
+        sellPriceText.font = font;
+        bonusText.font = font;
+        malusText.font = font;
+    }
+        
+        buyPriceText.text = $"{p.buyPrice}$";
         nameText.text = p.name.ToUpper();
-        buyPriceText.text = $"PRIX: {p.buyPrice}$";
-
-        // On prépare les détails (cachés au début)
         sellPriceText.text = $"REVENTE: {p.sellPrice}$";
-        bonusText.text = $"BONUS: {p.bonus}";
-        malusText.text = $"MALUS: {p.malus}";
+        if (p.bonus == "None"){ bonusText.text ="";}
+        else bonusText.text = $"BONUS: {p.bonus}";
+        if (p.malus == "None"){ malusText.text ="";}
+        else malusText.text = $"MALUS: {p.malus}";
 
         UpdateStock();
         SetSelected(false);
@@ -46,10 +58,10 @@ public class ProductUIItem : MonoBehaviour
 
     public void SetSelected(bool isSelected)
     {
-        // On affiche le cadre de sélection
+        // On affiche le cadre de sï¿½lection
         if (selectionFrame != null) selectionFrame.SetActive(isSelected);
 
-        // LA CASE BASCULANTE : On affiche les détails seulement si sélectionné
+        // LA CASE BASCULANTE : On affiche les dï¿½tails seulement si sï¿½lectionnï¿½
         if (detailsPanel != null) detailsPanel.SetActive(isSelected);
     }
 }
