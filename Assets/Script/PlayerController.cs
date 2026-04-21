@@ -53,6 +53,19 @@ public class PlayerMovement3D : MonoBehaviour
         axisV = $"joystick {gamepadIndex + 1} axis 1";
 
         if (monPanelUI != null) monPanelUI.SetActive(false);
+        // --- RECHERCHE AUTOMATIQUE DU BON MANAGER SUR LA CAMERA ---
+        // On récupère TOUS les QueueManagers présents sur la Main Camera
+        QueueManager[] tousLesManagers = Camera.main.GetComponents<QueueManager>();
+
+        foreach (QueueManager qm in tousLesManagers)
+        {
+            // Si l'assignedPlayer du script correspond au numéro du joueur (gamepadIndex + 1)
+            if (qm.assignedPlayer == (gamepadIndex + 1))
+            {
+                linkedQueue = qm;
+                Debug.Log($"Joueur {gamepadIndex + 1} a trouvé son QueueManager sur la Camera.");
+            }
+        }
     }
     private bool isStunned = false;
 

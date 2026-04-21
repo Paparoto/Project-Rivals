@@ -86,13 +86,29 @@ public class Client : MonoBehaviour
 
         if (transactionManager != null)
         {
-            TransactionManager.PlayerData player = assignedPlayer == 1 ? transactionManager.player1 : transactionManager.player2;
+            // On déclare 'player' UNE SEULE FOIS ici
+            TransactionManager.PlayerData player = (assignedPlayer == 1)
+                ? transactionManager.player1
+                : transactionManager.player2;
 
-            // Le client choisit son produit en secret
+            // On fait la requête
             GameObject result = Request(player);
 
-            // ON NE MET PAS bulleObjet.SetActive(true) ICI !
-            // Le client a choisi, mais il attend que tu lui parles.
+            if (result == null)
+            {
+                // S'il n'y a rien en stock, le client s'en va
+                Debug.Log("Client : Magasin vide, je m'en vais !");
+                if (queueManager != null)
+                {
+                    queueManager.RemoveClient(this.gameObject);
+                }
+            }
+            else
+            {
+                // S'il y a un produit, il attend qu'on lui parle (Bouton 1)
+                // On ne fait rien, la bulle s'affichera lors de l'interaction
+                Debug.Log("Client : Commande prête, j'attends le joueur.");
+            }
         }
     }
 

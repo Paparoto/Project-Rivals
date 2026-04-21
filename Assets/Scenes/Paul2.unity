@@ -194,7 +194,7 @@ PrefabInstance:
     - target: {fileID: 3906330012035003894, guid: 98af8ff7c81fecc4a825901e7506df3e, type: 3}
       propertyPath: CashierTargetZone
       value: 
-      objectReference: {fileID: 1637173585}
+      objectReference: {fileID: 1835007999}
     - target: {fileID: 3962171067557965137, guid: 98af8ff7c81fecc4a825901e7506df3e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1468.7147
@@ -264,11 +264,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 266743928291515907, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 264.99945
+      value: 264.99957
       objectReference: {fileID: 0}
     - target: {fileID: 341128002644987981, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 264.99945
+      value: 264.99957
       objectReference: {fileID: 0}
     - target: {fileID: 815555380905884799, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
       propertyPath: m_AnchorMax.x
@@ -286,6 +286,10 @@ PrefabInstance:
       propertyPath: playerTakeScript
       value: 
       objectReference: {fileID: 1823484357}
+    - target: {fileID: 3033494972569558448, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
+      propertyPath: clientPrefab
+      value: 
+      objectReference: {fileID: 7725629295119389706, guid: 96a2b61975fed8047be6696ae07d1622, type: 3}
     - target: {fileID: 3033494972569558448, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
       propertyPath: playerTakeScript
       value: 
@@ -1027,6 +1031,11 @@ MonoBehaviour:
 --- !u!4 &1828576038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6076289463367960943, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
+  m_PrefabInstance: {fileID: 782589612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1835007999 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6500177659432272040, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
   m_PrefabInstance: {fileID: 782589612}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2023141753
