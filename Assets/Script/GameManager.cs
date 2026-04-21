@@ -1,9 +1,12 @@
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public float gameDuration = 180f;
     private float timer;
+
+    public TMP_Text decompte;
 
     public bool isGameRunning = false;
 
@@ -16,17 +19,22 @@ public class GameManager : MonoBehaviour
     }
 
     void Update()
+{
+    if (!isGameRunning) return;
+
+    timer -= Time.deltaTime;
+
+    int minutes = Mathf.FloorToInt(timer / 60f);
+    int seconds = Mathf.FloorToInt(timer % 60f);
+    decompte.text = $"{minutes:00}:{seconds:00}";
+
+    if (timer <= 0f)
     {
-        if (!isGameRunning) return;
-
-        timer -= Time.deltaTime;
-
-        if (timer <= 0f)
-        {
-            timer = 0f;
-            EndGame();
-        }
+        timer = 0f;
+        decompte.text = "00:00";
+        EndGame();
     }
+}
 
     public void StartGame()
     {
