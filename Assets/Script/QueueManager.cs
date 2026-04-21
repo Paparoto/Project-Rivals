@@ -3,50 +3,60 @@ using System.Collections.Generic;
 
 public class QueueManager : MonoBehaviour
 {
+    [Header("Références")]
     public GameObject clientPrefab;
     public Transform[] waitPoints;
     public Transform spawnPoint;
     public Transform exitPoint;
+    public TransactionManager transactionManager;
 
-    [Header("Réglages Automatiques")]
-    public float spawnDelay = 2f;      // Temps avant le 1er client
-    public float spawnInterval = 5f;   // Temps entre chaque client (en secondes)
+    [Header("Joueur associé à cette file")]
+    public int assignedPlayer = 1;
+
+    [Header("Réglages Spawn")]
+    public float spawnDelay = 2f;
+    public float minInterval = 7f;
+    public float maxInterval = 10f;
 
     private List<GameObject> clientList = new List<GameObject>();
 
     void Start()
     {
-        // Cette ligne appelle la fonction "SpawnClient" toutes les 'spawnInterval' secondes
-        InvokeRepeating("SpawnClient", spawnDelay, spawnInterval);
+        Invoke("SpawnClient", spawnDelay);
     }
 
     void Update()
     {
-        // On garde la touche M pour faire partir le client de devant
         if (Input.GetKeyDown(KeyCode.M))
-        {
             ServeClient();
-        }
     }
 
-    public void SpawnClient()
+    void SpawnClient()
+{
+    if (clientList.Count < waitPoints.Length)
     {
-        // On vérifie s'il y a de la place dans la file (max 3)
-        if (clientList.Count < waitPoints.Length)
-        {
-            GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
-            clientList.Add(newClient);
-            UpdateQueuePositions();
-        }
+        GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
+        Client client = newClient.GetComponent<Client>();
+        client.transactionManager = transactionManager;
+        client.exitPoint = exitPoint;
+        client.assignedPlayer = assignedPlayer;
+        client.queueManager = this; // ← après la création du client
+        clientList.Add(newClient);
+        UpdateQueuePositions();
     }
 
-    void ServeClient()
+    Invoke("SpawnClient", Random.Range(minInterval, maxInterval));
+}
+
+    public void ServeClient()
     {
         if (clientList.Count > 0)
         {
             GameObject clientToLeave = clientList[0];
-            clientList.RemoveAt(0);
-            clientToLeave.GetComponent<Client>().Leave(exitPoint.position);
+            clientList.RemoveAt(0); // ← on retire de la liste AVANT de le faire partir
+            
+            if (clientToLeave != null) // ← vérification avant d'y accéder
+                clientToLeave.GetComponent<Client>().Leave(exitPoint.position);
 
             UpdateQueuePositions();
         }
@@ -54,9 +64,30 @@ public class QueueManager : MonoBehaviour
 
     void UpdateQueuePositions()
     {
-        for (int i = 0; i < clientList.Count; i++)
+        for (int i = clientList.Count - 1; i >= 0; i--)
         {
-            clientList[i].GetComponent<Client>().SetTarget(waitPoints[i].position);
+            // Nettoie la liste si un client a été détruit de façon inattendue
+            if (clientList[i] == null)
+            {
+                clientList.RemoveAt(i);
+                continue;
+            }
+
+            Client client = clientList[i].GetComponent<Client>();
+            client.SetTarget(waitPoints[i].position);
+
+            if (i == 0)
+                client.SetAsFirstInQueue();
+        }
+    }
+
+    public void RemoveClient(GameObject client)
+    {
+        if (clientList.Contains(client))
+        {
+            clientList.Remove(client);
+            client.GetComponent<Client>().Leave(exitPoint.position);
+            UpdateQueuePositions();
         }
     }
 }
