@@ -32,30 +32,34 @@ public class QueueManager : MonoBehaviour
     }
 
     void SpawnClient()
-{
-    if (clientList.Count < waitPoints.Length)
     {
-        GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
-        Client client = newClient.GetComponent<Client>();
-        client.transactionManager = transactionManager;
-        client.exitPoint = exitPoint;
-        client.assignedPlayer = assignedPlayer;
-        client.queueManager = this; // ← après la création du client
-        clientList.Add(newClient);
-        UpdateQueuePositions();
-    }
+        if (clientList.Count < waitPoints.Length)
+        {
+            GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
 
-    Invoke("SpawnClient", Random.Range(minInterval, maxInterval));
-}
+            CustomerSkinManager skinManager = newClient.GetComponent<CustomerSkinManager>();
+            if (skinManager != null) skinManager.ApplyRandomSkin();
+
+            Client client = newClient.GetComponent<Client>();
+            client.transactionManager = transactionManager;
+            client.exitPoint = exitPoint;
+            client.assignedPlayer = assignedPlayer;
+            client.queueManager = this;
+            clientList.Add(newClient);
+            UpdateQueuePositions();
+        }
+
+        Invoke("SpawnClient", Random.Range(minInterval, maxInterval));
+    }
 
     public void ServeClient()
     {
         if (clientList.Count > 0)
         {
             GameObject clientToLeave = clientList[0];
-            clientList.RemoveAt(0); // ← on retire de la liste AVANT de le faire partir
-            
-            if (clientToLeave != null) // ← vérification avant d'y accéder
+            clientList.RemoveAt(0);
+
+            if (clientToLeave != null)
                 clientToLeave.GetComponent<Client>().Leave(exitPoint.position);
 
             UpdateQueuePositions();
@@ -66,7 +70,6 @@ public class QueueManager : MonoBehaviour
     {
         for (int i = clientList.Count - 1; i >= 0; i--)
         {
-            // Nettoie la liste si un client a été détruit de façon inattendue
             if (clientList[i] == null)
             {
                 clientList.RemoveAt(i);

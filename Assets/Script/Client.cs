@@ -13,7 +13,7 @@ public class Client : MonoBehaviour
 
     [Header("Joueur assigné")]
     public int assignedPlayer = 1;
-    public bool isAtCounter = false; // ← visible dans l'Inspector
+    public bool isAtCounter = false;
 
     [Header("Requête en cours")]
     public string requestedProductName;
@@ -21,7 +21,35 @@ public class Client : MonoBehaviour
     public int requestedProductPrice;
 
     private const float arrivalThreshold = 0.1f;
-    [HideInInspector] public QueueManager queueManager; // ← injecté par QueueManager
+    [HideInInspector] public QueueManager queueManager;
+
+    private CustomerSkinManager skinManager;
+
+    public void SetTarget(Vector3 newPos)
+    {
+        if (skinManager == null)
+            skinManager = GetComponent<CustomerSkinManager>();
+
+        // Ne lancer la course que si la cible est suffisamment loin
+        bool shouldMove = Vector3.Distance(transform.position, newPos) > arrivalThreshold;
+
+        targetPosition = newPos;
+
+        if (shouldMove)
+        {
+            Vector3 direction = newPos - transform.position;
+            direction.y = 0;
+            if (direction != Vector3.zero)
+                transform.rotation = Quaternion.LookRotation(direction);
+
+            if (skinManager != null) skinManager.SetRunning(true);
+        }
+
+        if (isAtCounter) return;
+
+        isAtCounter = false;
+        hasRequestedAtCounter = false;
+    }
 
     void Update()
     {
@@ -38,8 +66,14 @@ public class Client : MonoBehaviour
 
     private void OnReachedTarget()
     {
-        hasRequestedAtCounter = true;
+        if (skinManager == null)
+            skinManager = GetComponent<CustomerSkinManager>();
 
+        if (skinManager != null) skinManager.SetRunning(false);
+
+        transform.rotation = Quaternion.Euler(0, 180f, 0);
+
+        hasRequestedAtCounter = true;
         if (!isAtCounter) return;
 
         if (transactionManager != null)
@@ -52,8 +86,7 @@ public class Client : MonoBehaviour
 
             if (result == null)
             {
-                Debug.Log("Inventaire vide, le client repart.");
-                queueManager.RemoveClient(gameObject); // ← retire de la liste PUIS part
+                queueManager.RemoveClient(gameObject);
             }
         }
     }
@@ -71,10 +104,7 @@ public class Client : MonoBehaviour
     public GameObject Request(TransactionManager.PlayerData player)
     {
         if (player.inventory == null || player.inventory.Count == 0)
-        {
-            Debug.Log("L'inventaire du joueur est vide.");
             return null;
-        }
 
         int randomIndex = Random.Range(0, player.inventory.Count);
         requestedProduct = player.inventory[randomIndex];
@@ -83,27 +113,24 @@ public class Client : MonoBehaviour
         requestedProductCategory = requestedProduct.category;
         requestedProductPrice    = requestedProduct.sellPrice;
 
-        Debug.Log($"[Joueur {assignedPlayer}] Le client demande : {requestedProduct.name} ({requestedProduct.category}) — {requestedProduct.sellPrice} pièces");
         return this.gameObject;
-    }
-
-    public void SetTarget(Vector3 newPos)
-    {
-        targetPosition = newPos;
-
-        // Si le client est déjà au comptoir, on ne touche pas à sa requête
-        if (isAtCounter) return;
-
-        isAtCounter = false;
-        hasRequestedAtCounter = false;
     }
 
     public void Leave(Vector3 exitPos)
     {
-        if (isLeaving) return; // ← évite d'appeler Leave() deux fois sur le même client
+        if (isLeaving) return;
+        if (skinManager == null)
+            skinManager = GetComponent<CustomerSkinManager>();
 
         isLeaving = true;
         targetPosition = exitPos;
+
+        Vector3 direction = exitPos - transform.position;
+        direction.y = 0;
+        if (direction != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(direction);
+
+        if (skinManager != null) skinManager.SetRunning(true);
 
         requestedProductName     = "";
         requestedProductCategory = "";
