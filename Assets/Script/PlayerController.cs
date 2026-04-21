@@ -73,7 +73,6 @@ public class PlayerMovement3D : MonoBehaviour
             if (qm.assignedPlayer == (gamepadIndex + 1))
             {
                 linkedQueue = qm;
-                Debug.Log($"Joueur {gamepadIndex + 1} a trouvé son QueueManager sur la Camera.");
             }
         }
     }
@@ -161,32 +160,60 @@ public class PlayerMovement3D : MonoBehaviour
             }
         }
 
-        
-        string buttonInteraction = "joystick " + (gamepadIndex + 1) + " button 1";
 
-        if (Input.GetKeyDown(buttonInteraction))
+        string btnInteract = "joystick " + (gamepadIndex + 1) + " button 1";
+
+        if (Input.GetKeyDown(btnInteract))
         {
-            // --- CAS 1 : À LA CAISSE ---
+            // DEBUG : Apparaît à chaque fois que tu appuies sur le bouton
+            Debug.Log("Bouton appuyé par Joueur " + (gamepadIndex + 1));
+
             if (isInCashierZone)
             {
-                // Si on tient déjà un objet, on essaie de le vendre
-                if (heldObject != null)
-                {
-                    VendreObjetAuClient();
-                }
-                // Sinon, on demande juste au client ce qu'il veut
-                else
-                {
-                    if (linkedQueue != null) linkedQueue.TriggerFirstClientBubble();
-                }
+                GererCaisse();
             }
-
-            // --- CAS 2 : AUX ÉTAGÈRES (Si on ne tient rien) ---
-            else if (heldObject == null)
+            else
             {
+                // On essaie de ramasser si on n'est pas à la caisse
                 TesterRamassageEtagere();
             }
         }
+        void GererCaisse()
+{
+    if (linkedQueue == null) return;
+
+    // CAS 1 : On tient un objet, on essaie de le vendre
+    if (heldObject != null)
+    {
+        string nomVoulu = linkedQueue.GetFirstClientProductName();
+        
+        // Vérification si l'objet en main est le bon
+        if (heldObject.name.Contains(nomVoulu))
+        {
+            Debug.Log("Vente réussie !");
+            
+            // Transaction
+            TransactionManager.PlayerData pData = (gamepadIndex == 0) ? transactionManager.player1 : transactionManager.player2;
+            transactionManager.Sell(pData, linkedQueue.GetFirstClientProduct());
+
+            // On vide la main
+            Destroy(heldObject);
+            heldObject = null;
+
+            // Le client s'en va
+            linkedQueue.ServeClient();
+        }
+        else
+        {
+            Debug.Log("Le client ne veut pas ça, il veut : " + nomVoulu);
+        }
+    }
+    // CAS 2 : Main vide, on demande au client ce qu'il veut
+    else
+    {
+        linkedQueue.TriggerFirstClientBubble();
+    }
+}
     }
 
 public float throwCooldown = 2f; // modifiable dans l'Inspector
@@ -321,27 +348,42 @@ void ThrowObject()
     }
     void TesterRamassageEtagere()
     {
+        if (heldObject != null) return; // On tient déjà quelque chose
         if (linkedQueue == null) return;
 
         GameObject prefabVoulu = linkedQueue.GetFirstClientRequest();
-        string categorieVoulue = linkedQueue.GetFirstClientCategory();
+        string cat = linkedQueue.GetFirstClientCategory();
 
-        if (prefabVoulu != null)
+        if (prefabVoulu == null)
         {
-            bool estAuBonEndroit = false;
-            // Correspondance Zones / Catégories
-            if (categorieVoulue == "Viande" && isInZone1) estAuBonEndroit = true;
-            if (categorieVoulue == "Poisson" && isInZone2) estAuBonEndroit = true;
-            if (categorieVoulue == "Legume" || categorieVoulue == "Fruit") if (isInZone3) estAuBonEndroit = true;
-            if (categorieVoulue == "Dessert" || categorieVoulue == "Fromage") if (isInZone4) estAuBonEndroit = true;
+            Debug.Log("Le client n'a pas encore fait de commande.");
+            return;
+        }
 
-            if (estAuBonEndroit)
-            {
-                heldObject = Instantiate(prefabVoulu, handTransform.position, handTransform.rotation);
-                heldObject.transform.SetParent(handTransform);
-                if (heldObject.GetComponent<Rigidbody>()) heldObject.GetComponent<Rigidbody>().isKinematic = true;
-                Debug.Log("Produit récupéré !");
-            }
+        bool auBonEndroit = false;
+
+        // --- MAPPING DES CATÉGORIES ---
+        // Note : attention aux majuscules et au 's' (Legumes vs Legume)
+        if (cat.Contains("Viande") && isInZone1) auBonEndroit = true;
+        else if (cat.Contains("Legume") && isInZone2) auBonEndroit = true;
+        else if (cat.Contains("Divers") && isInZone3) auBonEndroit = true;
+        else if (cat.Contains("Poisson") && isInZone4) auBonEndroit = true;
+        // Si tes fruits/desserts sont dans "Divers", ça passera en zone 3
+
+        if (auBonEndroit)
+        {
+            heldObject = Instantiate(prefabVoulu, handTransform.position, handTransform.rotation);
+            heldObject.transform.SetParent(handTransform);
+            heldObject.name = prefabVoulu.name; // Nettoie le nom pour la vente
+
+            if (heldObject.GetComponent<Rigidbody>())
+                heldObject.GetComponent<Rigidbody>().isKinematic = true;
+
+            Debug.Log("SUCCÈS : Objet ramassé !");
+        }
+        else
+        {
+            Debug.Log("ERREUR : Mauvaise zone pour " + cat + " (Zones: Z1=" + isInZone1 + ", Z2=" + isInZone2 + ")");
         }
     }
 
@@ -374,6 +416,42 @@ void ThrowObject()
         else
         {
             Debug.Log("Le client ne veut pas cet objet ! Il veut : " + nomVoulu);
+        }
+    }
+    void GererCaisse()
+    {
+        if (linkedQueue == null) return;
+
+        // CAS 1 : On tient un objet, on essaie de le vendre
+        if (heldObject != null)
+        {
+            string nomVoulu = linkedQueue.GetFirstClientProductName();
+
+            // Vérification si l'objet en main est le bon
+            if (heldObject.name.Contains(nomVoulu))
+            {
+                Debug.Log("Vente réussie !");
+
+                // Transaction
+                TransactionManager.PlayerData pData = (gamepadIndex == 0) ? transactionManager.player1 : transactionManager.player2;
+                transactionManager.Sell(pData, linkedQueue.GetFirstClientProduct());
+
+                // On vide la main
+                Destroy(heldObject);
+                heldObject = null;
+
+                // Le client s'en va
+                linkedQueue.ServeClient();
+            }
+            else
+            {
+                Debug.Log("Le client ne veut pas ça, il veut : " + nomVoulu);
+            }
+        }
+        // CAS 2 : Main vide, on demande au client ce qu'il veut
+        else
+        {
+            linkedQueue.TriggerFirstClientBubble();
         }
     }
 }
