@@ -365,9 +365,9 @@ void ThrowObject()
         // --- MAPPING DES CATÉGORIES ---
         // Note : attention aux majuscules et au 's' (Legumes vs Legume)
         if (cat.Contains("Viande") && isInZone1) auBonEndroit = true;
-        else if (cat.Contains("Legume") && isInZone2) auBonEndroit = true;
-        else if (cat.Contains("Divers") && isInZone3) auBonEndroit = true;
-        else if (cat.Contains("Poisson") && isInZone4) auBonEndroit = true;
+        else if (cat.Contains("Divers") && isInZone2) auBonEndroit = true;
+        else if (cat.Contains("Poisson") && isInZone3) auBonEndroit = true;
+        else if (cat.Contains("Legumes") && isInZone4) auBonEndroit = true;
         // Si tes fruits/desserts sont dans "Divers", ça passera en zone 3
 
         if (auBonEndroit)
