@@ -52,10 +52,9 @@ public class QueueManager : MonoBehaviour
         clientList.Add(newClient);
         UpdateQueuePositions();
     }
+    if (assignedPlayer == 1){Invoke("SpawnClient", Random.Range(minInterval * bonusManager.P1clientBonus, maxInterval * bonusManager.P1clientBonus));}
+    else if (assignedPlayer == 2){Invoke("SpawnClient", Random.Range(minInterval * bonusManager.P2clientBonus, maxInterval * bonusManager.P2clientBonus));}
 
-    // Utilise le bon bonus selon le joueur assigné à cette file
-    float clientBonus = assignedPlayer == 1 ? bonusManager.P1clientBonus : bonusManager.P2clientBonus;
-    Invoke("SpawnClient", Random.Range(minInterval * clientBonus, maxInterval * clientBonus));
 }
 
     public void ServeClient()

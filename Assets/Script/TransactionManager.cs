@@ -65,19 +65,63 @@ public class TransactionManager : MonoBehaviour
     }
 
     public bool Buy(PlayerData player, Product product)
+{
+    if (player.money < product.buyPrice)
     {
-        if (player.money < product.buyPrice)
-        {
-            Debug.Log("Pas assez d'argent");
-            return false;
-        }
-
-        player.money -= product.buyPrice;
-        player.inventory.Add(product);
-        
-        RefreshVisuals();
-        return true;
+        Debug.Log("Pas assez d'argent");
+        return false;
     }
+
+    player.money -= product.buyPrice;
+    player.inventory.Add(product);
+
+    // Détermine quel joueur
+    bool isP1 = (player == player1);
+
+    // Applique le bonus selon le produit
+    switch (product.name)
+    {
+        case "Cookies":
+            if (isP1) bonusManager.P1speedBonus += 0.20f;
+            else bonusManager.P2speedBonus += 0.20f;
+            break;
+        case "Thon":
+            if (isP1) { bonusManager.P1moneyBonus += 0.10f; bonusManager.P1clientBonus += 0.10f; }
+            else { bonusManager.P2moneyBonus += 0.10f; bonusManager.P2clientBonus += 0.10f; }
+            break;
+        case "Saumon":
+            if (isP1) bonusManager.P1moneyBonus += 0.05f;
+            else bonusManager.P2moneyBonus += 0.05f;
+            break;
+        case "Fromage bleu":
+            if (isP1) bonusManager.P1clientBonus -= 0.10f;
+            else bonusManager.P2clientBonus -= 0.10f;
+            break;
+        case "Emmental":
+            if (isP1) bonusManager.P1moneyBonus -= 0.05f;
+            else bonusManager.P2moneyBonus -= 0.05f;
+            break;
+        case "Entrecote":
+            if (isP1) bonusManager.P1speedBonus -= 0.05f;
+            else bonusManager.P2speedBonus -= 0.05f;
+            break;
+        case "Boeuf":
+            if (isP1) bonusManager.P1speedBonus -= 0.08f;
+            else bonusManager.P2speedBonus -= 0.08f;
+            break;
+        case "pomme":
+            if (isP1) bonusManager.P1speedBonus += 0.10f;
+            else bonusManager.P2speedBonus += 0.10f;
+            break;
+        case "Melon":
+            if (isP1) bonusManager.P1speedBonus += 0.08f;
+            else bonusManager.P2speedBonus += 0.08f;
+            break;
+    }
+
+    RefreshVisuals();
+    return true;
+}
 
     public void Sell(PlayerData player, Product product)
     {
