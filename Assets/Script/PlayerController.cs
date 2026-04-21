@@ -104,7 +104,7 @@ public class PlayerMovement3D : MonoBehaviour
 
     void Update()
     {
-        if (isStunned) return;
+        
 
         // --- MOUVEMENT ---
         float h = Input.GetAxisRaw(axisH);

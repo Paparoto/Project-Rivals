@@ -7,7 +7,7 @@ public class Tomato : MonoBehaviour
         PlayerMovement3D player = collision.gameObject.GetComponent<PlayerMovement3D>();
         if (player != null)
         {
-            player.Stun(3f);
+            player.Stun(5f);
         }
 
         Destroy(gameObject);
