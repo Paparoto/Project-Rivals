@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Linq; // Nécessaire pour la gestion des listes
-
+using System.Linq;
+using TMPro;
 public class TransactionManager : MonoBehaviour
 {
     [Header("Lien avec le Visuel")]
@@ -11,6 +11,9 @@ public class TransactionManager : MonoBehaviour
     [Header("Modèles des Produits (Prefabs)")]
     public GameObject Apple;
     // Ajoute d'autres GameObjects ici si besoin (ex: public GameObject Bread;)
+    [Header("UI Argent")]
+    public TMP_Text moneyTextP1;
+    public TMP_Text moneyTextP2;
 
     // ======================
     // 📦 CLASSE PRODUCT
@@ -52,18 +55,11 @@ public class TransactionManager : MonoBehaviour
 
     void Start()
     {
-        // --- INITIALISATION DE TEST ---
-        // On crée deux pommes de test
-        Product apple1 = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", Apple);
-        
-        // On les ajoute au joueur 1
-        player1.inventory.Add(apple1);
-        player1.money = 500;
+       Product apple1 = new Product("Pomme", "Fruit", 2, 5, "HP", "Aucun", Apple);
+    player1.inventory.Add(apple1);
+    player1.money = 500;
 
-        Debug.Log($"Inventaire initial : {player1.inventory.Count} produits.");
-
-        // Mise à jour visuelle immédiate au lancement
-        RefreshVisuals();
+    RefreshVisuals();
     }
 
     // ======================
@@ -122,8 +118,12 @@ public class TransactionManager : MonoBehaviour
     private void RefreshVisuals()
     {
         if (foodVisualizer != null)
-        {
             foodVisualizer.Refresh();
-        }
+
+        if (moneyTextP1 != null)
+            moneyTextP1.text = $"{player1.money}$";
+
+        if (moneyTextP2 != null)
+            moneyTextP2.text = $"{player2.money}$";
     }
 }
