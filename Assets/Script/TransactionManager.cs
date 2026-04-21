@@ -7,12 +7,13 @@ public class TransactionManager : MonoBehaviour
 {
     // --- AJOUT : LE SINGLETON ---
     public static TransactionManager Instance;
+    private BonusManager bonusManager;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
     }
-    // ----------------------------
+
 
     [Header("Lien avec le Visuel")]
     public FoodVisualizer foodVisualizer; // Gardé pour compatibilité, mais on peut faire mieux
@@ -59,7 +60,7 @@ public class TransactionManager : MonoBehaviour
     void Start()
     {
         player1.money = 500;
-
+        bonusManager = FindObjectOfType<BonusManager>();
         RefreshVisuals();
     }
 
@@ -84,8 +85,6 @@ public class TransactionManager : MonoBehaviour
 
         player.inventory.Remove(product);
         player.money += product.sellPrice;
-        player.profits.Add(product.sellPrice - product.buyPrice);
-
         RefreshVisuals();
     }
 

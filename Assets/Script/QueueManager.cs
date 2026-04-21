@@ -19,12 +19,14 @@ public class QueueManager : MonoBehaviour
     public float maxInterval = 10f;
 
     private List<GameObject> clientList = new List<GameObject>();
-
+    private BonusManager bonusManager;
     
 
     void Start()
     {
+        bonusManager = FindObjectOfType<BonusManager>();
         Invoke("SpawnClient", spawnDelay + 0.5f);
+
     }
 
     void Update()
@@ -34,25 +36,27 @@ public class QueueManager : MonoBehaviour
     }
 
     void SpawnClient()
+{
+    if (clientList.Count < waitPoints.Length)
     {
-        if (clientList.Count < waitPoints.Length)
-        {
-            GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
 
-            CustomerSkinManager skinManager = newClient.GetComponent<CustomerSkinManager>();
-            if (skinManager != null) skinManager.ApplyRandomSkin();
+        CustomerSkinManager skinManager = newClient.GetComponent<CustomerSkinManager>();
+        if (skinManager != null) skinManager.ApplyRandomSkin();
 
-            Client client = newClient.GetComponent<Client>();
-            client.transactionManager = transactionManager;
-            client.exitPoint = exitPoint;
-            client.assignedPlayer = assignedPlayer;
-            client.queueManager = this;
-            clientList.Add(newClient);
-            UpdateQueuePositions();
-        }
-
-        Invoke("SpawnClient", Random.Range(minInterval, maxInterval));
+        Client client = newClient.GetComponent<Client>();
+        client.transactionManager = transactionManager;
+        client.exitPoint = exitPoint;
+        client.assignedPlayer = assignedPlayer;
+        client.queueManager = this;
+        clientList.Add(newClient);
+        UpdateQueuePositions();
     }
+
+    // Utilise le bon bonus selon le joueur assigné à cette file
+    float clientBonus = assignedPlayer == 1 ? bonusManager.P1clientBonus : bonusManager.P2clientBonus;
+    Invoke("SpawnClient", Random.Range(minInterval * clientBonus, maxInterval * clientBonus));
+}
 
     public void ServeClient()
     {
