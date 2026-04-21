@@ -44,7 +44,13 @@ public class FoodVisualizer : MonoBehaviour
 
     private string CleanName(string name)
     {
-        if (name.Contains(" ")) return name.Split(' ')[0];
+        // Au lieu de couper au premier espace, on enlève " (" 
+        // qui arrive avant le chiffre (1), (2), etc.
+        int index = name.IndexOf(" (");
+        if (index != -1)
+        {
+            return name.Substring(0, index);
+        }
         return name;
     }
 }
