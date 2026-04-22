@@ -110,11 +110,6 @@ public class Client : MonoBehaviour
                     queueManager.RemoveClient(this.gameObject);
             }
         }
-
-        if (isWaiting && !isLeaving && texteProduit != null)
-        {
-            texteProduit.color = Color.Lerp(Color.red, Color.black, currentPatience / maxPatience);
-        }
     }
 
    private void OnReachedTarget()
