@@ -17,4 +17,9 @@ public class MenuManager : MonoBehaviour
     {
         SceneManager.LoadScene("CamilleScene"); 
     }
+
+    public void Commande()
+    {
+        SceneManager.LoadScene("Tuto"); 
+    }
 }
