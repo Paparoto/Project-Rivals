@@ -30,7 +30,7 @@ public class Client : MonoBehaviour
     [Header("Bulle de Dialogue")]
     public GameObject bulleObjet;
     public TMP_Text texteProduit;
-
+    public Image fondBulle;
     private bool hasChosenProduct = false;
 
     [Header("Patience")]
@@ -78,6 +78,24 @@ public class Client : MonoBehaviour
         {
             currentPatience -= Time.deltaTime;
 
+            // --- CHANGEMENT DE COULEUR ---
+            if (fondBulle != null)
+            {
+                // Calcul du ratio (1 au début, 0 à la fin)
+                float ratio = currentPatience / maxPatience;
+
+                // Transition du rouge (fin) vers le vert (début)
+                // Quand ratio = 1 (début), c'est Vert. Quand ratio = 0 (fin), c'est Rouge.
+                fondBulle.color = Color.Lerp(Color.red, Color.green, ratio);
+            }
+
+            // On s'assure que le texte reste bien noir
+            if (texteProduit != null)
+            {
+                texteProduit.color = Color.black;
+            }
+
+            // --- FIN DE PATIENCE ---
             if (currentPatience <= 0)
             {
                 isWaiting = false;
@@ -132,6 +150,11 @@ public class Client : MonoBehaviour
         {
             currentPatience = maxPatience;
             isWaiting = true;
+        }
+        if (bulleObjet != null && fondBulle != null)
+        {
+            fondBulle.color = Color.green; // La bulle commence bien verte
+                                           // ... le reste de ton code ...
         }
     }
 
