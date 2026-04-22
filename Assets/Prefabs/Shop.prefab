@@ -9089,6 +9089,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   saleSound: {fileID: 8300000, guid: 4a73d4d1af5c7e94b9cd598b20b98154, type: 3}
+  backgroundMusic: {fileID: 0}
+  musicVolume: 0.5
 --- !u!1 &2424591787785865083
 GameObject:
   m_ObjectHideFlags: 0
@@ -26248,7 +26250,6 @@ GameObject:
   - component: {fileID: 7760168460887104479}
   - component: {fileID: 3969035848798683310}
   - component: {fileID: 2195841729852468005}
-  - component: {fileID: 7406364962422312533}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -26475,27 +26476,11 @@ MonoBehaviour:
   P1speedBonus: 1
   P1clientBonus: 1
   P1moneyBonus: 1
+  P1patienceBonus: 1
   P2speedBonus: 1
   P2clientBonus: 1
   P2moneyBonus: 1
---- !u!114 &7406364962422312533
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7447359082431234984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f9d1290ab415b047b32710d9e296b1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BonusManager
-  P1speedBonus: 1
-  P1clientBonus: 1
-  P1moneyBonus: 1
-  P2speedBonus: 1
-  P2clientBonus: 1
-  P2moneyBonus: 1
+  P2patienceBonus: 1
 --- !u!1 &7465549458748116951
 GameObject:
   m_ObjectHideFlags: 0
