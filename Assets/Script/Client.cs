@@ -124,20 +124,25 @@ public class Client : MonoBehaviour
 
     public GameObject Request(TransactionManager.PlayerData player)
     {
-        // Si le client a déjà choisi un produit, on ne change pas !
         if (hasChosenProduct) return this.gameObject;
 
         if (player.inventory == null || player.inventory.Count == 0)
             return null;
 
-        int randomIndex = Random.Range(0, player.inventory.Count);
-        requestedProduct = player.inventory[randomIndex];
+        // Filtrer les tomates de l'inventaire
+        var filteredInventory = player.inventory.FindAll(p => p.name != "Tomate");
+
+        if (filteredInventory.Count == 0)
+            return null;
+
+        int randomIndex = Random.Range(0, filteredInventory.Count);
+        requestedProduct = filteredInventory[randomIndex];
 
         requestedProductName = requestedProduct.name;
         requestedProductCategory = requestedProduct.category;
         requestedProductPrice = requestedProduct.sellPrice;
 
-        hasChosenProduct = true; // On verrouille le choix
+        hasChosenProduct = true;
         return this.gameObject;
     }
 
