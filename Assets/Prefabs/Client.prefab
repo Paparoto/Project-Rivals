@@ -384,7 +384,8 @@ MonoBehaviour:
   queueManager: {fileID: 0}
   bulleObjet: {fileID: 7441765405134280286}
   texteProduit: {fileID: 7022606130790432169}
-  maxPatience: 10
+  fondBulle: {fileID: 7123383948691777764}
+  maxPatience: 15
 --- !u!23 &8862553498108545294
 MeshRenderer:
   m_ObjectHideFlags: 0
