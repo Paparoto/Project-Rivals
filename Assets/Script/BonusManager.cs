@@ -7,9 +7,11 @@ public class BonusManager : MonoBehaviour
     public float P1speedBonus = 1f;
     public float P1clientBonus = 1f;
     public float P1moneyBonus = 1f;
+    public float P1patienceBonus = 1f;
     public float P2speedBonus = 1f;
     public float P2clientBonus = 1f;
     public float P2moneyBonus = 1f;
+    public float P2patienceBonus = 1f;
 
 
     void Start()
@@ -25,5 +27,6 @@ public class BonusManager : MonoBehaviour
         if (P2clientBonus <= 0.3f) P2clientBonus=0.3f;
         if (P1moneyBonus <= 0.3f) P1moneyBonus=0.3f;
         if (P2moneyBonus <= 0.3f) P2moneyBonus=0.3f;
+        if (P2patienceBonus <= 0.3f) P2patienceBonus=0.3f;
     }
 }

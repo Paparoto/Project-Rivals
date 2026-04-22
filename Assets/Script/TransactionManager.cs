@@ -81,8 +81,8 @@ public class TransactionManager : MonoBehaviour
     switch (product.name)
     {
         case "Cookies":
-            if (isP1) bonusManager.P1speedBonus += 0.20f;
-            else bonusManager.P2speedBonus += 0.20f;
+            if (isP1) {bonusManager.P1speedBonus += 0.20f ; bonusManager.P1patienceBonus -= 0.1f; }
+            else {bonusManager.P2speedBonus += 0.20f; bonusManager.P1patienceBonus -= 0.1f; }
             break;
         case "Thon":
             if (isP1) { bonusManager.P1moneyBonus += 0.10f; bonusManager.P1clientBonus -= 0.10f; }
@@ -117,8 +117,12 @@ public class TransactionManager : MonoBehaviour
             else bonusManager.P2speedBonus += 0.08f;
             break;
         case "Gateau":
-            if (isP1) bonusManager.P1clientBonus -= 0.10f;
-            else bonusManager.P2clientBonus -= 0.10f;
+            if (isP1){ bonusManager.P1clientBonus -= 0.10f; bonusManager.P1clientBonus -= 0.05f; }
+            else {bonusManager.P2clientBonus -= 0.10f; bonusManager.P2clientBonus -= 0.05f; }
+            break;
+        case "Poivron":
+            if (isP1) bonusManager.P1patienceBonus += 0.1f;
+            else bonusManager.P2patienceBonus += 0.1f;
             break;
     }
 
