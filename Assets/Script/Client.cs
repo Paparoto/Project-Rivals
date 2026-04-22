@@ -37,7 +37,12 @@ public class Client : MonoBehaviour
     public float maxPatience = 10f;
     private float currentPatience;
     private bool isWaiting = false;
+    private BonusManager bonusManager;
 
+    void Start()
+    {
+        bonusManager = FindObjectOfType<BonusManager>();
+    }
     public void SetTarget(Vector3 newPos)
     {
         if (skinManager == null)
@@ -112,51 +117,52 @@ public class Client : MonoBehaviour
         }
     }
 
-    private void OnReachedTarget()
+   private void OnReachedTarget()
+{
+    if (skinManager == null)
+        skinManager = GetComponent<CustomerSkinManager>();
+
+    if (skinManager != null) skinManager.SetRunning(false);
+
+    transform.rotation = Quaternion.Euler(0, 180f, 0);
+
+    hasRequestedAtCounter = true;
+    if (!isAtCounter) return;
+
+    if (transactionManager != null)
     {
-        if (skinManager == null)
-            skinManager = GetComponent<CustomerSkinManager>();
+        TransactionManager.PlayerData player = (assignedPlayer == 1)
+            ? transactionManager.player1
+            : transactionManager.player2;
 
-        if (skinManager != null) skinManager.SetRunning(false);
+        GameObject result = Request(player);
 
-        transform.rotation = Quaternion.Euler(0, 180f, 0);
-
-        hasRequestedAtCounter = true;
-        if (!isAtCounter) return;
-
-        if (transactionManager != null)
+        if (result == null)
         {
-            TransactionManager.PlayerData player = (assignedPlayer == 1)
-                ? transactionManager.player1
-                : transactionManager.player2;
-
-            GameObject result = Request(player);
-
-            if (result == null)
-            {
-                Debug.Log("Client : Magasin vide, je m'en vais !");
-                if (queueManager != null)
-                    queueManager.RemoveClient(this.gameObject);
-            }
-            else
-            {
-                Debug.Log("Client : Commande prête, j'attends le joueur.");
-            }
+            Debug.Log("Client : Magasin vide, je m'en vais !");
+            if (queueManager != null)
+                queueManager.RemoveClient(this.gameObject);
         }
-
-        if (!isAtCounter) return;
-
-        if (transactionManager != null)
+        else
         {
-            currentPatience = maxPatience;
-            isWaiting = true;
-        }
-        if (bulleObjet != null && fondBulle != null)
-        {
-            fondBulle.color = Color.green; // La bulle commence bien verte
-                                           // ... le reste de ton code ...
+            Debug.Log("Client : Commande prête, j'attends le joueur.");
         }
     }
+
+    if (!isAtCounter) return;
+
+    if (transactionManager != null)
+    {
+        float patienceBonus = assignedPlayer == 1 ? bonusManager.P1patienceBonus : bonusManager.P2patienceBonus;
+        currentPatience = maxPatience * patienceBonus;
+        isWaiting = true;
+    }
+
+    if (bulleObjet != null && fondBulle != null)
+    {
+        fondBulle.color = Color.green;
+    }
+}
 
     public void SetAsFirstInQueue()
     {

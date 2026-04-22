@@ -55,9 +55,9 @@ public class ShopManagerUI : MonoBehaviour
         catalog.Add(new TransactionManager.Product("Tomate", "Legumes", 5, 5, "Lancer de tomate", "Invendable", prefabTomate));
         catalog.Add(new TransactionManager.Product("Entrecote", "Viande", 30, 75, "None", "Plus lent (-5%)", prefabEntrecote));
         catalog.Add(new TransactionManager.Product("Boeuf", "Viande", 15, 40, "None", "Plus lent (-8%)", prefabRoti));
-        catalog.Add(new TransactionManager.Product("Poivron", "Legumes", 5, 20, "None", "None", prefabPoivron));
-        catalog.Add(new TransactionManager.Product("Gateau", "Divers", 50, 75, "Clients +10%", "None", prefabGateau));
-        catalog.Add(new TransactionManager.Product("Cookies", "Divers", 5, 15, "Plus rapide +20%", "None", prefabCookie));
+        catalog.Add(new TransactionManager.Product("Poivron", "Legumes", 5, 20, "Patience +10%", "None", prefabPoivron));
+        catalog.Add(new TransactionManager.Product("Gateau", "Divers", 50, 75, "Clients +10%", "Patience -5%", prefabGateau));
+        catalog.Add(new TransactionManager.Product("Cookies", "Divers", 5, 15, "Plus rapide +20%", "Patience -10%", prefabCookie));
         catalog.Add(new TransactionManager.Product("Thon", "Poisson", 40, 40, "Revenus +10%", "Clients -10%", prefabThon));
         catalog.Add(new TransactionManager.Product("Saumon", "Poisson", 10, 15, "Revenus +5%", "None", prefabSaumon));
         catalog.Add(new TransactionManager.Product("Fromage bleu", "Divers", 30, 80, "None", "Clients -10%", prefabFromageBleu));
