@@ -38,7 +38,6 @@ public class Client : MonoBehaviour
         if (skinManager == null)
             skinManager = GetComponent<CustomerSkinManager>();
 
-        // Ne lancer la course que si la cible est suffisamment loin
         bool shouldMove = Vector3.Distance(transform.position, newPos) > arrivalThreshold;
 
         targetPosition = newPos;
@@ -86,17 +85,14 @@ public class Client : MonoBehaviour
 
         if (transactionManager != null)
         {
-            // On déclare 'player' UNE SEULE FOIS ici
             TransactionManager.PlayerData player = (assignedPlayer == 1)
                 ? transactionManager.player1
                 : transactionManager.player2;
 
-            // On fait la requête
             GameObject result = Request(player);
 
             if (result == null)
             {
-                // S'il n'y a rien en stock, le client s'en va
                 Debug.Log("Client : Magasin vide, je m'en vais !");
                 if (queueManager != null)
                 {
@@ -105,8 +101,6 @@ public class Client : MonoBehaviour
             }
             else
             {
-                // S'il y a un produit, il attend qu'on lui parle (Bouton 1)
-                // On ne fait rien, la bulle s'affichera lors de l'interaction
                 Debug.Log("Client : Commande prête, j'attends le joueur.");
             }
         }
@@ -129,9 +123,10 @@ public class Client : MonoBehaviour
         if (player.inventory == null || player.inventory.Count == 0)
             return null;
 
-        // Filtrer les tomates de l'inventaire
+        // Filtrer les tomates
         var filteredInventory = player.inventory.FindAll(p => p.name != "Tomate");
 
+        // S'il n'y a que des tomates (ou rien d'autre), le client s'en va
         if (filteredInventory.Count == 0)
             return null;
 
@@ -150,7 +145,7 @@ public class Client : MonoBehaviour
     {
         if (isLeaving) return;
 
-        if (bulleObjet != null) bulleObjet.SetActive(false); // Cache la bulle
+        if (bulleObjet != null) bulleObjet.SetActive(false);
         if (skinManager == null)
             skinManager = GetComponent<CustomerSkinManager>();
 
@@ -168,14 +163,13 @@ public class Client : MonoBehaviour
         requestedProductCategory = "";
         requestedProductPrice    = 0;
     }
+
     public void AfficherMaBulle()
     {
         if (bulleObjet != null && texteProduit != null)
         {
             texteProduit.text = "Je veux : " + requestedProductName;
             bulleObjet.SetActive(true);
-
-            // On a supprimé le Invoke("CacherBulle") pour que ça reste affiché !
         }
     }
 
