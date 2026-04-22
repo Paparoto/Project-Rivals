@@ -86,16 +86,16 @@ public class TransactionManager : MonoBehaviour
             else bonusManager.P2speedBonus += 0.20f;
             break;
         case "Thon":
-            if (isP1) { bonusManager.P1moneyBonus += 0.10f; bonusManager.P1clientBonus += 0.10f; }
-            else { bonusManager.P2moneyBonus += 0.10f; bonusManager.P2clientBonus += 0.10f; }
+            if (isP1) { bonusManager.P1moneyBonus += 0.10f; bonusManager.P1clientBonus -= 0.10f; }
+            else { bonusManager.P2moneyBonus += 0.10f; bonusManager.P2clientBonus -= 0.10f; }
             break;
         case "Saumon":
             if (isP1) bonusManager.P1moneyBonus += 0.05f;
             else bonusManager.P2moneyBonus += 0.05f;
             break;
         case "Fromage bleu":
-            if (isP1) bonusManager.P1clientBonus -= 0.10f;
-            else bonusManager.P2clientBonus -= 0.10f;
+            if (isP1) bonusManager.P1clientBonus += 0.15f;
+            else bonusManager.P2clientBonus += 0.15f;
             break;
         case "Emmental":
             if (isP1) bonusManager.P1moneyBonus -= 0.05f;
@@ -117,21 +117,29 @@ public class TransactionManager : MonoBehaviour
             if (isP1) bonusManager.P1speedBonus += 0.08f;
             else bonusManager.P2speedBonus += 0.08f;
             break;
+        case "Gateau":
+            if (isP1) bonusManager.P1clientBonus -= 0.10f;
+            else bonusManager.P2clientBonus -= 0.10f;
+            break;
     }
 
     RefreshVisuals();
     return true;
 }
 
-    public void Sell(PlayerData player, Product product)
-    {
-        if (!player.inventory.Contains(product)) return;
+public void Sell(PlayerData player, Product product)
+{
+    if (!player.inventory.Contains(product)) return;
 
-        player.inventory.Remove(product);
-        player.money += product.sellPrice;
-        RefreshVisuals();
-    }
+    player.inventory.Remove(product);
 
+    bool isP1 = (player == player1);
+    float moneyBonus = isP1 ? bonusManager.P1moneyBonus : bonusManager.P2moneyBonus;
+
+    player.money += Mathf.RoundToInt(product.sellPrice * moneyBonus);
+
+    RefreshVisuals();
+}
     public int GetProfit(PlayerData player)
 {
     int inventoryValue = 0;
