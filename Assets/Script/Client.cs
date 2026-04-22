@@ -33,6 +33,11 @@ public class Client : MonoBehaviour
 
     private bool hasChosenProduct = false;
 
+    [Header("Patience")]
+    public float maxPatience = 10f; // Temps d'attente max
+    private float currentPatience;
+    private bool isWaiting = false; // Est-ce qu'on est en train de compter ?
+
     public void SetTarget(Vector3 newPos)
     {
         if (skinManager == null)
@@ -69,6 +74,25 @@ public class Client : MonoBehaviour
             else if (!hasRequestedAtCounter)
                 OnReachedTarget();
         }
+        if (isWaiting && !isLeaving)
+        {
+            currentPatience -= Time.deltaTime;
+
+            if (currentPatience <= 0)
+            {
+                isWaiting = false;
+                Debug.Log("Client : J'en ai marre d'attendre !");
+
+                // On demande au manager de nous faire partir
+                if (queueManager != null)
+                    queueManager.RemoveClient(this.gameObject);
+            }
+        }
+        if (isWaiting && !isLeaving && texteProduit != null)
+        {
+            // Le texte devient de plus en plus rouge au fur et à mesure de l'attente
+            texteProduit.color = Color.Lerp(Color.red, Color.black, currentPatience / maxPatience);
+        }
     }
 
     private void OnReachedTarget()
@@ -103,6 +127,16 @@ public class Client : MonoBehaviour
             {
                 Debug.Log("Client : Commande prête, j'attends le joueur.");
             }
+        }
+        if (!isAtCounter) return; // S'il n'est pas encore au comptoir, il ne s'impatiente pas encore
+
+        if (transactionManager != null)
+        {
+            // ... (ton code existant : définition du player, Request, affichage bulle) ...
+
+            // --- NOUVEAU : On lance le chrono de patience ---
+            currentPatience = maxPatience;
+            isWaiting = true;
         }
     }
 
@@ -144,6 +178,8 @@ public class Client : MonoBehaviour
     public void Leave(Vector3 exitPos)
     {
         if (isLeaving) return;
+
+        isWaiting = false;
 
         if (bulleObjet != null) bulleObjet.SetActive(false);
         if (skinManager == null)
