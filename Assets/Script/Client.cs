@@ -34,9 +34,9 @@ public class Client : MonoBehaviour
     private bool hasChosenProduct = false;
 
     [Header("Patience")]
-    public float maxPatience = 10f; // Temps d'attente max
+    public float maxPatience = 10f;
     private float currentPatience;
-    private bool isWaiting = false; // Est-ce qu'on est en train de compter ?
+    private bool isWaiting = false;
 
     public void SetTarget(Vector3 newPos)
     {
@@ -44,7 +44,6 @@ public class Client : MonoBehaviour
             skinManager = GetComponent<CustomerSkinManager>();
 
         bool shouldMove = Vector3.Distance(transform.position, newPos) > arrivalThreshold;
-
         targetPosition = newPos;
 
         if (shouldMove)
@@ -74,6 +73,7 @@ public class Client : MonoBehaviour
             else if (!hasRequestedAtCounter)
                 OnReachedTarget();
         }
+
         if (isWaiting && !isLeaving)
         {
             currentPatience -= Time.deltaTime;
@@ -99,8 +99,16 @@ public class Client : MonoBehaviour
             if (currentPatience <= 0)
             {
                 isWaiting = false;
-                if (queueManager != null) queueManager.RemoveClient(this.gameObject);
+                Debug.Log("Client : J'en ai marre d'attendre !");
+
+                if (queueManager != null)
+                    queueManager.RemoveClient(this.gameObject);
             }
+        }
+
+        if (isWaiting && !isLeaving && texteProduit != null)
+        {
+            texteProduit.color = Color.Lerp(Color.red, Color.black, currentPatience / maxPatience);
         }
     }
 
@@ -128,22 +136,18 @@ public class Client : MonoBehaviour
             {
                 Debug.Log("Client : Magasin vide, je m'en vais !");
                 if (queueManager != null)
-                {
                     queueManager.RemoveClient(this.gameObject);
-                }
             }
             else
             {
                 Debug.Log("Client : Commande prête, j'attends le joueur.");
             }
         }
-        if (!isAtCounter) return; // S'il n'est pas encore au comptoir, il ne s'impatiente pas encore
+
+        if (!isAtCounter) return;
 
         if (transactionManager != null)
         {
-            // ... (ton code existant : définition du player, Request, affichage bulle) ...
-
-            // --- NOUVEAU : On lance le chrono de patience ---
             currentPatience = maxPatience;
             isWaiting = true;
         }
@@ -171,10 +175,8 @@ public class Client : MonoBehaviour
         if (player.inventory == null || player.inventory.Count == 0)
             return null;
 
-        // Filtrer les tomates
         var filteredInventory = player.inventory.FindAll(p => p.name != "Tomate");
 
-        // S'il n'y a que des tomates (ou rien d'autre), le client s'en va
         if (filteredInventory.Count == 0)
             return null;
 
