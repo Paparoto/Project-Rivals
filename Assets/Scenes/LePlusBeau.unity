@@ -218,6 +218,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5136915447590179568, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 35.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 5136915447590179568, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21.79
+      objectReference: {fileID: 0}
     - target: {fileID: 7005049671957667753, guid: c1a88cd8b7be86746a825f14e48cd867, type: 3}
       propertyPath: m_Name
       value: Shop
@@ -354,6 +362,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9d1290ab415b047b32710d9e296b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BonusManager
+  P1speedBonus: 1
+  P1clientBonus: 1
+  P1moneyBonus: 1
+  P2speedBonus: 1
+  P2clientBonus: 1
+  P2moneyBonus: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

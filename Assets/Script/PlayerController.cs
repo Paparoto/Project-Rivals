@@ -141,14 +141,22 @@ public class PlayerMovement3D : MonoBehaviour
 
         if (Input.GetKeyDown(btnInteract))
         {
+            // 1. Priorité au PC si on est dans la zone
             if (isInPCZone)
             {
                 if (monPanelUI != null) monPanelUI.SetActive(!monPanelUI.activeSelf);
             }
+            // 2. Sinon, interaction avec la Caisse
             else if (isInCashierZone)
             {
                 GererCaisse();
             }
+            // 3. Sinon, si on TIENT déjà un objet, on essaie de le REPOSER
+            else if (heldObject != null)
+            {
+                ReposerObjet();
+            }
+            // 4. Sinon (main vide et hors zones spéciales), on essaie de RAMASSER
             else
             {
                 TesterRamassageEtagere();
@@ -292,5 +300,41 @@ public class PlayerMovement3D : MonoBehaviour
     {
         FoodVisualizer[] visualizers = FindObjectsByType<FoodVisualizer>(FindObjectsSortMode.None);
         foreach (var v in visualizers) v.Refresh();
+    }
+    void ReposerObjet()
+    {
+        // On récupère les infos du produit porté pour connaître sa catégorie
+        TransactionManager.PlayerData pData = (gamepadIndex == 0) ? transactionManager.player1 : transactionManager.player2;
+        TransactionManager.Product produitTenu = pData.inventory.Find(p => p.name == carriedProductName);
+
+        if (produitTenu == null) return;
+
+        string cat = produitTenu.category;
+        bool auBonEndroit = false;
+
+        // --- MAPPING DES ZONES (Le même que pour le ramassage) ---
+        if (cat == "Viande" && isInZone1) auBonEndroit = true;
+        else if (cat == "Divers" && isInZone2) auBonEndroit = true;
+        else if (cat == "Poisson" && isInZone3) auBonEndroit = true;
+        else if (cat == "Legumes" && isInZone4) auBonEndroit = true;
+
+        if (auBonEndroit)
+        {
+            Debug.Log("Objet reposé au rayon " + cat);
+
+            // 1. On détruit l'objet physique dans la main
+            Destroy(heldObject);
+            heldObject = null;
+
+            // 2. On réinitialise le nom porté
+            carriedProductName = "";
+
+            // 3. On rafraîchit les étagères (cela va "décacher" l'item)
+            RefreshAllShelves();
+        }
+        else
+        {
+            Debug.Log("Tu ne peux pas reposer de la " + cat + " ici !");
+        }
     }
 }   
