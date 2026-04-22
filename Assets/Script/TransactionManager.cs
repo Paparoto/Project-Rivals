@@ -59,7 +59,6 @@ public class TransactionManager : MonoBehaviour
 
     void Start()
     {
-        player1.money = 500;
         bonusManager = FindObjectOfType<BonusManager>();
         RefreshVisuals();
     }
