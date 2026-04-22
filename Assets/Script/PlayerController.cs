@@ -44,7 +44,7 @@ public class PlayerMovement3D : MonoBehaviour
     private string axisH;
     private string axisV;
     private GameObject heldObject;
-
+    private BonusManager bonusManager;
     // États des zones
     [HideInInspector] public bool isInPCZone = false;
     private bool isInCashierZone = false;
@@ -57,6 +57,7 @@ public class PlayerMovement3D : MonoBehaviour
 
     void Start()
     {
+        bonusManager = FindObjectOfType<BonusManager>();
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
 
@@ -255,13 +256,13 @@ public class PlayerMovement3D : MonoBehaviour
         if (thrown.GetComponent<Rigidbody>()) thrown.GetComponent<Rigidbody>().linearVelocity = transform.forward * throwSpeed;
     }
 
-    void FixedUpdate()
+   void FixedUpdate()
     {
-        Vector3 velocity = movement * speed;
+        float speedBonus = gamepadIndex == 0 ? bonusManager.P1speedBonus : bonusManager.P2speedBonus;
+        Vector3 velocity = movement * speed * speedBonus;
         velocity.y = rb.linearVelocity.y;
         rb.linearVelocity = velocity;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == PCTargetZone) isInPCZone = true;
