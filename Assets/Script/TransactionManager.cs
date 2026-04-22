@@ -128,6 +128,9 @@ public class TransactionManager : MonoBehaviour
 
 public void Sell(PlayerData player, Product product)
 {
+    if (SoundManager.Instance != null)
+        SoundManager.Instance.PlaySaleSound(); 
+
     if (!player.inventory.Contains(product)) return;
 
     player.inventory.Remove(product);

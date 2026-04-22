@@ -18,15 +18,21 @@ public class QueueManager : MonoBehaviour
     public float minInterval = 7f;
     public float maxInterval = 10f;
 
+    [Header("Sons")]
+    public AudioClip spawnSound;
+
+    private AudioSource audioSource;
     private List<GameObject> clientList = new List<GameObject>();
     private BonusManager bonusManager;
-    
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
         bonusManager = FindObjectOfType<BonusManager>();
         Invoke("SpawnClient", spawnDelay + 0.5f);
-
     }
 
     void Update()
@@ -36,26 +42,31 @@ public class QueueManager : MonoBehaviour
     }
 
     void SpawnClient()
-{
-    if (clientList.Count < waitPoints.Length)
     {
-        GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
+        if (clientList.Count < waitPoints.Length)
+        {
+            GameObject newClient = Instantiate(clientPrefab, spawnPoint.position, Quaternion.identity);
 
-        CustomerSkinManager skinManager = newClient.GetComponent<CustomerSkinManager>();
-        if (skinManager != null) skinManager.ApplyRandomSkin();
+            CustomerSkinManager skinManager = newClient.GetComponent<CustomerSkinManager>();
+            if (skinManager != null) skinManager.ApplyRandomSkin();
 
-        Client client = newClient.GetComponent<Client>();
-        client.transactionManager = transactionManager;
-        client.exitPoint = exitPoint;
-        client.assignedPlayer = assignedPlayer;
-        client.queueManager = this;
-        clientList.Add(newClient);
-        UpdateQueuePositions();
+            Client client = newClient.GetComponent<Client>();
+            client.transactionManager = transactionManager;
+            client.exitPoint = exitPoint;
+            client.assignedPlayer = assignedPlayer;
+            client.queueManager = this;
+            clientList.Add(newClient);
+            UpdateQueuePositions();
+
+            if (spawnSound != null)
+                audioSource.PlayOneShot(spawnSound);
+        }
+
+        if (assignedPlayer == 1)
+            Invoke("SpawnClient", Random.Range(minInterval * bonusManager.P1clientBonus, maxInterval * bonusManager.P1clientBonus));
+        else if (assignedPlayer == 2)
+            Invoke("SpawnClient", Random.Range(minInterval * bonusManager.P2clientBonus, maxInterval * bonusManager.P2clientBonus));
     }
-    if (assignedPlayer == 1){Invoke("SpawnClient", Random.Range(minInterval * bonusManager.P1clientBonus, maxInterval * bonusManager.P1clientBonus));}
-    else if (assignedPlayer == 2){Invoke("SpawnClient", Random.Range(minInterval * bonusManager.P2clientBonus, maxInterval * bonusManager.P2clientBonus));}
-
-}
 
     public void ServeClient()
     {
@@ -84,16 +95,15 @@ public class QueueManager : MonoBehaviour
             Client client = clientList[i].GetComponent<Client>();
             client.SetTarget(waitPoints[i].position);
 
-            // Dans QueueManager.cs
             if (i == 0)
             {
                 client.SetAsFirstInQueue();
-                TransactionManager.PlayerData pData = (assignedPlayer == 1) ? transactionManager.player1 : transactionManager.player2;
+                TransactionManager.PlayerData pData = (assignedPlayer == 1)
+                    ? transactionManager.player1
+                    : transactionManager.player2;
 
                 if (pData.inventory.Count > 0)
-                {
-                    client.Request(pData); // Le client ne changera pas si hasChosenProduct est true
-                }
+                    client.Request(pData);
             }
         }
     }
@@ -108,20 +118,17 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    // Cette fonction est utilisée par le TakeObject du joueur pour savoir quoi ramasser
     public GameObject GetFirstClientRequest()
     {
         if (clientList.Count > 0 && clientList[0] != null)
         {
             Client client = clientList[0].GetComponent<Client>();
             if (client != null && client.requestedProduct != null)
-            {
                 return client.requestedProduct.prefab;
-            }
         }
         return null;
     }
-    // Fonction à ajouter pour renvoyer le nom du produit au joueur
+
     public string GetFirstClientProductName()
     {
         if (clientList.Count > 0 && clientList[0] != null)
@@ -129,38 +136,35 @@ public class QueueManager : MonoBehaviour
             Client client = clientList[0].GetComponent<Client>();
             if (client != null)
             {
-                // On renvoie le nom du produit stocké dans le script Client
                 if (string.IsNullOrEmpty(client.requestedProductName))
                     return "Rien (en attente)";
-
                 return client.requestedProductName;
             }
         }
         return "Aucun client à la caisse";
     }
+
     public void TriggerFirstClientBubble()
     {
         if (clientList.Count > 0 && clientList[0] != null)
         {
             Client client = clientList[0].GetComponent<Client>();
             if (client != null)
-            {
                 client.AfficherMaBulle();
-            }
         }
     }
 
-    // 3. Pour savoir à quelle étagère aller
     public string GetFirstClientCategory()
     {
-        if (clientList.Count > 0 && clientList[0] != null) return clientList[0].GetComponent<Client>().requestedProductCategory;
+        if (clientList.Count > 0 && clientList[0] != null)
+            return clientList[0].GetComponent<Client>().requestedProductCategory;
         return "";
     }
 
-    // 4. Pour la vente finale (TransactionManager)
     public TransactionManager.Product GetFirstClientProduct()
     {
-        if (clientList.Count > 0 && clientList[0] != null) return clientList[0].GetComponent<Client>().requestedProduct;
+        if (clientList.Count > 0 && clientList[0] != null)
+            return clientList[0].GetComponent<Client>().requestedProduct;
         return null;
     }
 }

@@ -147,3 +147,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e462c46dc51e1ef4c943fbbe11d1d25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tomato
+  throwSound: {fileID: 8300000, guid: 7c6f228b6d6fd024f87d4ceee476f064, type: 3}
