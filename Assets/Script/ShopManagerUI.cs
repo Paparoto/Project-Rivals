@@ -53,8 +53,8 @@ public class ShopManagerUI : MonoBehaviour
         catalog.Clear();
         // Ajoute bien le nom de la variable prefab � la fin de chaque ligne
         catalog.Add(new TransactionManager.Product("Tomate", "Legumes", 5, 5, "Lancer de tomate", "Invendable", prefabTomate));
-        catalog.Add(new TransactionManager.Product("Entrecote", "Viande", 30, 75, "None", "Plus lent (-5%)", prefabEntrecote));
-        catalog.Add(new TransactionManager.Product("Boeuf", "Viande", 15, 40, "None", "Plus lent (-8%)", prefabRoti));
+        catalog.Add(new TransactionManager.Product("Entrecote", "Viande", 20, 40, "Clients +10%", "Plus lent (-5%)", prefabEntrecote));
+        catalog.Add(new TransactionManager.Product("Boeuf", "Viande", 30, 70, "None", "Plus lent (-8%)", prefabRoti));
         catalog.Add(new TransactionManager.Product("Poivron", "Legumes", 5, 20, "Patience +10%", "None", prefabPoivron));
         catalog.Add(new TransactionManager.Product("Gateau", "Divers", 50, 75, "Clients +10%", "Patience -5%", prefabGateau));
         catalog.Add(new TransactionManager.Product("Cookies", "Divers", 5, 15, "Plus rapide +20%", "Patience -10%", prefabCookie));
@@ -63,7 +63,7 @@ public class ShopManagerUI : MonoBehaviour
         catalog.Add(new TransactionManager.Product("Fromage bleu", "Divers", 30, 80, "None", "Clients -10%", prefabFromageBleu));
         catalog.Add(new TransactionManager.Product("Emmental", "Divers", 10, 55, "Revenus -5%", "None", prefabEmmental));
         catalog.Add(new TransactionManager.Product("pomme", "Legumes", 10, 15, "Vitesse +10%", "None", prefabPomme));
-        catalog.Add(new TransactionManager.Product("Melon", "Legumes", 20, 50, "Vitesse +8%", "None", prefabMelon));
+        catalog.Add(new TransactionManager.Product("Melon", "Legumes", 20, 30, "Vitesse +8%", "None", prefabMelon));
 
         foreach (var p in catalog)
         {

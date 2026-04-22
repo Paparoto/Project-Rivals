@@ -9089,7 +9089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   saleSound: {fileID: 8300000, guid: 4a73d4d1af5c7e94b9cd598b20b98154, type: 3}
-  backgroundMusic: {fileID: 0}
+  backgroundMusic: {fileID: 8300000, guid: 22a3d7ab499360d45a40e56a949bc9f5, type: 3}
   musicVolume: 0.5
 --- !u!1 &2424591787785865083
 GameObject:

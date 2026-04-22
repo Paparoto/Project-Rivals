@@ -24,6 +24,7 @@ public class BonusManager : MonoBehaviour
         if (P1speedBonus <= 0.3f) P1speedBonus=0.3f;
         if (P2speedBonus <= 0.3f) P2speedBonus=0.3f;
         if (P1clientBonus <= 0.3f) P1clientBonus=0.3f;
+        if (P1patienceBonus <= 0.3f) P1patienceBonus=0.3f;
         if (P2clientBonus <= 0.3f) P2clientBonus=0.3f;
         if (P1moneyBonus <= 0.3f) P1moneyBonus=0.3f;
         if (P2moneyBonus <= 0.3f) P2moneyBonus=0.3f;
